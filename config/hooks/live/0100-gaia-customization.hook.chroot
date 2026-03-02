@@ -1,0 +1,29 @@
+#!/bin/bash
+# Gaia Linux - Post-install customization hook
+
+set -e
+
+echo "=== Gaia Linux Customization ==="
+
+# Set default shell to zsh for new users
+sed -i 's|DSHELL=/bin/bash|DSHELL=/bin/zsh|' /etc/default/useradd 2>/dev/null || true
+
+# Set hostname
+echo "gaia" > /etc/hostname
+
+# OS release branding
+cat > /etc/os-release << 'EOF'
+PRETTY_NAME="Gaia Linux"
+NAME="Gaia"
+ID=gaia
+ID_LIKE=debian
+VERSION_CODENAME=bookworm
+HOME_URL="https://github.com/gaialinux"
+EOF
+
+# Set LightDM autologin for live session
+if [ -f /etc/lightdm/lightdm.conf ]; then
+    sed -i 's/#autologin-user=/autologin-user=user/' /etc/lightdm/lightdm.conf
+fi
+
+echo "=== Customization complete ==="

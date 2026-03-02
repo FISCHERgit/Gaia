@@ -1,0 +1,49 @@
+# Gaia Linux - Core Packages
+
+# Desktop Environment
+xorg
+xfce4
+xfce4-goodies
+lightdm
+lightdm-gtk-greeter
+
+# System
+linux-image-amd64
+firmware-linux-free
+firmware-linux-nonfree
+sudo
+network-manager
+network-manager-gnome
+pulseaudio
+pavucontrol
+blueman
+
+# Terminal & Shell
+bash
+zsh
+alacritty
+
+# File Manager
+thunar
+thunar-archive-plugin
+file-roller
+
+# Web Browser
+firefox-esr
+
+# Utilities
+htop
+neofetch
+git
+curl
+wget
+nano
+vim
+
+# Fonts
+fonts-noto
+fonts-liberation2
+
+# Theming
+arc-theme
+papirus-icon-theme
