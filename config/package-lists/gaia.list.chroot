@@ -51,3 +51,12 @@ papirus-icon-theme
 # Boot
 plymouth
 plymouth-themes
+
+# Installer
+calamares
+calamares-settings-debian
+os-prober
+dosfstools
+e2fsprogs
+btrfs-progs
+squashfs-tools

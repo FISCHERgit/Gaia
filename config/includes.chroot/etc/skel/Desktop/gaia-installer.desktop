@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Install Gaia Linux
+Comment=Install Gaia Linux to your hard drive
+Exec=pkexec calamares
+Icon=/usr/share/pixmaps/gaia-logo.png
+Terminal=false
+Categories=System;
+Keywords=install;installer;calamares;

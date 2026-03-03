@@ -1,0 +1,28 @@
+---
+componentName: gaia
+
+strings:
+    productName:         "Gaia Linux"
+    shortProductName:    "Gaia"
+    version:             1.0
+    shortVersion:        1.0
+    versionedName:       "Gaia Linux 1.0"
+    shortVersionedName:  "Gaia 1.0"
+    bootloaderEntryName: "Gaia Linux"
+    productUrl:          https://github.com/FISCHERgit/Gaia
+    supportUrl:          https://github.com/FISCHERgit/Gaia/issues
+    knownIssuesUrl:      https://github.com/FISCHERgit/Gaia/issues
+    releaseNotesUrl:     https://github.com/FISCHERgit/Gaia/releases
+
+images:
+    productLogo:         "logo.png"
+    productIcon:         "logo.png"
+    productWelcome:      "logo.png"
+
+slideshow: "show.qml"
+
+style:
+    sidebarBackground:   "#1e1b4b"
+    sidebarText:         "#e9d5ff"
+    sidebarTextSelect:   "#ffffff"
+    sidebarTextHighlight: "#7c3aed"
