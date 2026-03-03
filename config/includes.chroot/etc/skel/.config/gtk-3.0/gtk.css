@@ -1,0 +1,58 @@
+/* Gaia Linux - Purple accent override for Arc-Dark */
+
+/* Selection & highlights */
+@define-color theme_selected_bg_color #7c3aed;
+@define-color theme_selected_fg_color #ffffff;
+@define-color accent_bg_color #7c3aed;
+@define-color accent_color #a78bfa;
+
+/* Override blue accents with purple */
+*:selected,
+*:selected:focus {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+
+row:selected {
+    background-color: #7c3aed;
+}
+
+button:checked,
+modelbutton:checked {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+
+check:checked,
+radio:checked {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+
+switch:checked slider {
+    background-color: #7c3aed;
+}
+
+scale highlight {
+    background-color: #7c3aed;
+}
+
+progressbar progress {
+    background-color: #7c3aed;
+}
+
+entry:focus,
+textview:focus,
+treeview:focus {
+    border-color: #7c3aed;
+}
+
+link,
+*:link {
+    color: #a78bfa;
+}
+
+link:visited,
+*:visited {
+    color: #8b5cf6;
+}

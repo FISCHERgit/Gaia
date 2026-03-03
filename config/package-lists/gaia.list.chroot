@@ -47,3 +47,7 @@ fonts-liberation2
 # Theming
 arc-theme
 papirus-icon-theme
+
+# Boot
+plymouth
+plymouth-themes

@@ -1,0 +1,51 @@
+[window]
+padding = { x = 12, y = 12 }
+opacity = 0.92
+decorations = "None"
+
+[font]
+size = 12.0
+
+[font.normal]
+family = "Noto Sans Mono"
+style = "Regular"
+
+[font.bold]
+style = "Bold"
+
+# Gaia Purple Dark Theme
+[colors.primary]
+background = "#1a1a2e"
+foreground = "#e2e2e8"
+
+[colors.cursor]
+text = "#1a1a2e"
+cursor = "#a78bfa"
+
+[colors.vi_mode_cursor]
+text = "#1a1a2e"
+cursor = "#c4b5fd"
+
+[colors.selection]
+text = "#e2e2e8"
+background = "#3b3363"
+
+[colors.normal]
+black   = "#1a1a2e"
+red     = "#f87171"
+green   = "#4ade80"
+yellow  = "#fbbf24"
+blue    = "#7c3aed"
+magenta = "#a78bfa"
+cyan    = "#22d3ee"
+white   = "#e2e2e8"
+
+[colors.bright]
+black   = "#2d2b55"
+red     = "#fca5a5"
+green   = "#86efac"
+yellow  = "#fcd34d"
+blue    = "#8b5cf6"
+magenta = "#c4b5fd"
+cyan    = "#67e8f9"
+white   = "#ffffff"

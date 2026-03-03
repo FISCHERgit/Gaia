@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfwm4" version="1.0">
+  <!-- Window button layout: close/min/max on left like macOS -->
+  <property name="button_layout" type="string" value="CMH|"/>
+  <property name="theme" type="string" value="Arc-Dark"/>
+  <property name="title_alignment" type="string" value="center"/>
+  <property name="title_font" type="string" value="Sans Bold 10"/>
+</channel>

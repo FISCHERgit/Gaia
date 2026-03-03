@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Gaia
+Description=Gaia Linux Boot Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/gaia
+ScriptFile=/usr/share/plymouth/themes/gaia/gaia.script

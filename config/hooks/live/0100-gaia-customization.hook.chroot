@@ -26,4 +26,44 @@ if [ -f /etc/lightdm/lightdm.conf ]; then
     sed -i 's/#autologin-user=/autologin-user=user/' /etc/lightdm/lightdm.conf
 fi
 
+# LightDM greeter config with Gaia wallpaper
+mkdir -p /etc/lightdm
+cat > /etc/lightdm/lightdm-gtk-greeter.conf << 'EOF'
+[greeter]
+background=/usr/share/backgrounds/gaia/wallpaper.png
+theme-name=Arc-Dark
+icon-theme-name=Papirus-Dark
+font-name=Noto Sans 11
+indicators=~host;~spacer;~clock;~spacer;~session;~power
+clock-format=%H:%M  %a %d %b
+position=50%,center 50%,center
+panel-position=top
+default-user-image=/usr/share/pixmaps/gaia-logo.png
+EOF
+
+# Set GRUB theme
+if [ -f /etc/default/grub ]; then
+    sed -i 's|#GRUB_THEME=.*|GRUB_THEME=/boot/grub/themes/gaia/theme.txt|' /etc/default/grub
+    echo 'GRUB_THEME=/boot/grub/themes/gaia/theme.txt' >> /etc/default/grub
+    update-grub 2>/dev/null || true
+fi
+
+# Set Arc-Dark as default GTK theme
+mkdir -p /etc/skel/.config/gtk-3.0
+cat > /etc/skel/.config/gtk-3.0/settings.ini << 'EOF'
+[Settings]
+gtk-theme-name=Arc-Dark
+gtk-icon-theme-name=Papirus-Dark
+gtk-font-name=Noto Sans 11
+gtk-cursor-theme-name=Adwaita
+gtk-application-prefer-dark-theme=true
+EOF
+
+# Set Plymouth theme
+if command -v plymouth-set-default-theme &> /dev/null; then
+    plymouth-set-default-theme gaia
+fi
+
+# Neofetch uses ASCII art from /etc/gaia-ascii.txt (configured in skel)
+
 echo "=== Customization complete ==="
