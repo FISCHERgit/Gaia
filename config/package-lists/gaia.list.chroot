@@ -39,6 +39,7 @@ curl
 wget
 nano
 vim
+wmctrl
 
 # Fonts
 fonts-noto
