@@ -38,6 +38,10 @@ lb config \
     --bootloaders "grub-efi" \
     --debian-installer none \
     --memtest none \
+    --cache true \
+    --cache-packages true \
+    --cache-stages "bootstrap rootfs" \
+    --apt-indices false \
     --iso-application "Gaia Linux" \
     --iso-publisher "Gaia Project" \
     --iso-volume "GaiaLinux"
