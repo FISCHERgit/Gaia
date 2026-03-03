@@ -60,8 +60,8 @@ gtk-application-prefer-dark-theme=true
 EOF
 
 # Set Plymouth theme
-if command -v plymouth-set-default-theme &> /dev/null; then
-    plymouth-set-default-theme gaia
+if command -v plymouth-set-default-theme &> /dev/null && [ -f /usr/share/plymouth/themes/gaia/gaia.plymouth ]; then
+    plymouth-set-default-theme gaia || true
 fi
 
 # Neofetch uses ASCII art from /etc/gaia-ascii.txt (configured in skel)
