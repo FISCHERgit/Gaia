@@ -51,6 +51,10 @@ papirus-icon-theme
 # Boot
 plymouth
 plymouth-themes
+grub-efi-amd64
+grub-efi-amd64-signed
+shim-signed
+efibootmgr
 
 # Installer
 calamares
