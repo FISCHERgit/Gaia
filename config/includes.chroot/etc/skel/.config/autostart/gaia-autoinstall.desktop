@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Gaia Auto Installer
+Exec=/usr/local/bin/gaia-autoinstall.sh
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

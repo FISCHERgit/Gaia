@@ -66,8 +66,9 @@ fi
 
 # Neofetch uses ASCII art from /etc/gaia-ascii.txt (configured in skel)
 
-# Make installer desktop shortcut executable and trusted
+# Make installer desktop shortcut and autoinstall script executable
 chmod +x /etc/skel/Desktop/gaia-installer.desktop 2>/dev/null || true
+chmod +x /usr/local/bin/gaia-autoinstall.sh 2>/dev/null || true
 
 # Polkit rule to allow live user to run Calamares
 mkdir -p /etc/polkit-1/localauthority/50-local.d
