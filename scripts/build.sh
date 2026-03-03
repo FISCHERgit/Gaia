@@ -29,29 +29,61 @@ mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 # Initialize live-build config
+# NOTE: --debian-installer none = we use Calamares instead
 lb config \
     --distribution bookworm \
     --archive-areas "main contrib non-free non-free-firmware" \
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootloaders "grub-efi" \
-    --debian-installer live \
+    --debian-installer none \
+    --memtest none \
     --iso-application "Gaia Linux" \
     --iso-publisher "Gaia Project" \
     --iso-volume "GaiaLinux"
 
-# Copy custom package lists
-cp "$PROJECT_DIR/config/package-lists/"*.list.chroot "$BUILD_DIR/config/package-lists/" 2>/dev/null || true
+echo ""
+echo "=== Copying custom config ==="
 
-# Copy filesystem overlay
+# Copy custom package lists
+echo "Copying package lists..."
+cp -v "$PROJECT_DIR/config/package-lists/"*.list.chroot "$BUILD_DIR/config/package-lists/"
+
+# Copy filesystem overlay (files that go into the live system)
+echo "Copying includes.chroot..."
 if [ -d "$PROJECT_DIR/config/includes.chroot" ]; then
-    cp -r "$PROJECT_DIR/config/includes.chroot/"* "$BUILD_DIR/config/includes.chroot/" 2>/dev/null || true
+    cp -rv "$PROJECT_DIR/config/includes.chroot/." "$BUILD_DIR/config/includes.chroot/"
+fi
+
+# Copy binary overlay (files that go onto the ISO, e.g. GRUB config)
+echo "Copying includes.binary..."
+if [ -d "$PROJECT_DIR/config/includes.binary" ]; then
+    cp -rv "$PROJECT_DIR/config/includes.binary/." "$BUILD_DIR/config/includes.binary/"
 fi
 
 # Copy hooks
+echo "Copying hooks..."
 if [ -d "$PROJECT_DIR/config/hooks/live" ]; then
-    cp "$PROJECT_DIR/config/hooks/live/"* "$BUILD_DIR/config/hooks/live/" 2>/dev/null || true
+    cp -v "$PROJECT_DIR/config/hooks/live/"* "$BUILD_DIR/config/hooks/live/"
 fi
+
+# Verify critical files are in place
+echo ""
+echo "=== Verifying config ==="
+for f in \
+    "$BUILD_DIR/config/package-lists/gaia.list.chroot" \
+    "$BUILD_DIR/config/includes.chroot/usr/share/backgrounds/gaia/wallpaper.png" \
+    "$BUILD_DIR/config/includes.chroot/usr/share/pixmaps/gaia-logo.png" \
+    "$BUILD_DIR/config/includes.chroot/etc/calamares/settings.conf" \
+    "$BUILD_DIR/config/includes.binary/boot/grub/grub.cfg" \
+    "$BUILD_DIR/config/hooks/live/0100-gaia-customization.hook.chroot"; do
+    if [ -f "$f" ]; then
+        echo "  OK: $(basename "$f")"
+    else
+        echo "  MISSING: $f"
+        exit 1
+    fi
+done
 
 # Build
 echo ""
@@ -60,4 +92,4 @@ lb build
 
 echo ""
 echo "=== Build complete ==="
-echo "ISO: $(find "$BUILD_DIR" -name '*.iso' -type f)"
+echo "ISO: $(find "$BUILD_DIR" -maxdepth 1 -name '*.iso' -type f)"
