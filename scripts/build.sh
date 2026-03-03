@@ -35,7 +35,7 @@ lb config \
     --archive-areas "main contrib non-free non-free-firmware" \
     --architectures amd64 \
     --binary-images iso-hybrid \
-    --bootloaders "grub-efi" \
+    --bootloaders "grub-efi,grub-pc" \
     --debian-installer none \
     --memtest none \
     --cache true \
