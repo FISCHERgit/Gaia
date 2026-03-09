@@ -53,7 +53,7 @@ firefox-esr
 
 # Utilities
 htop
-neofetch
+fastfetch
 git
 curl
 wget
