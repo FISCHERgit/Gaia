@@ -7,10 +7,10 @@ message-bg-color: "#1e1b4b"
 terminal-font: "Unifont Regular 16"
 
 + image {
-    left = 43%
-    top = 5%
-    width = 14%
-    height = 20%
+    left = 46%
+    top = 2%
+    width = 8%
+    height = 12%
     file = "logo.png"
 }
 
