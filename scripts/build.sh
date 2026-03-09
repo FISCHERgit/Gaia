@@ -59,6 +59,19 @@ echo "=== Copying custom config ==="
 echo "Copying package lists..."
 cp -v "$PROJECT_DIR/config/package-lists/"*.list.chroot "$BUILD_DIR/config/package-lists/"
 
+# If custom Gaia kernel .debs exist, use them instead of Debian kernel
+CUSTOM_KERNEL_DIR="$PROJECT_DIR/config/packages.chroot"
+if ls "$CUSTOM_KERNEL_DIR"/linux-image-*.deb &>/dev/null; then
+    echo "Custom Gaia kernel detected — using it instead of Debian kernel"
+    mkdir -p "$BUILD_DIR/config/packages.chroot"
+    cp -v "$CUSTOM_KERNEL_DIR"/linux-*.deb "$BUILD_DIR/config/packages.chroot/"
+    # Remove linux-image-amd64 from package list to avoid conflict
+    sed -i '/^linux-image-amd64$/d' "$BUILD_DIR/config/package-lists/gaia.list.chroot"
+    echo "  Removed linux-image-amd64 from package list"
+else
+    echo "No custom kernel found — using Debian kernel"
+fi
+
 # Copy filesystem overlay (files that go into the live system)
 echo "Copying includes.chroot..."
 if [ -d "$PROJECT_DIR/config/includes.chroot" ]; then

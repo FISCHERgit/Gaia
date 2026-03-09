@@ -1,4 +1,9 @@
 build/
 *.iso
 *.img
+*.deb
 .cache/
+scripts/kernel/build/
+scripts/kernel/out/
+scripts/kernel/kernel-build.log
+config/packages.chroot/
