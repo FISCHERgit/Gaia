@@ -11,11 +11,10 @@ dolphin
 konsole
 kate
 ark
-spectacle
+kde-spectacle
 gwenview
 okular
 kcalc
-kde-spectacle
 kscreen
 plasma-systemmonitor
 plasma-nm
@@ -42,7 +41,6 @@ firmware-linux-free
 firmware-linux-nonfree
 sudo
 network-manager
-pulseaudio
 pipewire
 pipewire-pulse
 wireplumber
