@@ -1,10 +1,8 @@
 # Gaia Linux - Core Packages (KDE Plasma 6 / Debian Trixie)
 
-# KDE Plasma Desktop
-plasma-desktop
-plasma-workspace
+# KDE Plasma Desktop (meta-package pulls everything needed)
+kde-plasma-desktop
 sddm
-sddm-theme-breeze
 
 # KDE Core Apps
 dolphin
@@ -21,30 +19,29 @@ plasma-nm
 plasma-pa
 bluedevil
 powerdevil
-kde-config-sddm
 
 # KDE Frameworks & Integration
-frameworkintegration
 breeze
 breeze-gtk-theme
 breeze-icon-theme
 kde-cli-tools
 
-# Wayland + X11 (Plasma 6 is Wayland-first)
-plasma-workspace-wayland
+# Wayland + X11
 xwayland
 xorg
+xserver-xorg-video-all
+xserver-xorg-input-all
 
 # System
 linux-image-amd64
-firmware-linux-free
-firmware-linux-nonfree
+firmware-linux
 sudo
 network-manager
+dbus-x11
 pipewire
 pipewire-pulse
+pipewire-audio
 wireplumber
-blueman
 
 # Terminal & Shell
 bash
@@ -62,7 +59,6 @@ curl
 wget
 nano
 vim
-wmctrl
 
 # Fonts
 fonts-noto
@@ -73,9 +69,7 @@ fonts-hack
 plymouth
 plymouth-themes
 grub-efi-amd64
-grub-efi-amd64-signed
 grub-pc-bin
-shim-signed
 efibootmgr
 
 # Installer (Calamares in live session)

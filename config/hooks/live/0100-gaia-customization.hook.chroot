@@ -25,17 +25,27 @@ EOF
 mkdir -p /etc/sddm.conf.d
 
 # SDDM autologin for live session
-cat > /etc/sddm.conf.d/gaia.conf << 'EOF'
+# Detect available session file
+PLASMA_SESSION=""
+for s in /usr/share/xsessions/plasma.desktop /usr/share/wayland-sessions/plasma.desktop /usr/share/xsessions/plasmax11.desktop; do
+    if [ -f "$s" ]; then
+        PLASMA_SESSION="$(basename "$s" .desktop)"
+        break
+    fi
+done
+[ -z "$PLASMA_SESSION" ] && PLASMA_SESSION="plasma"
+
+cat > /etc/sddm.conf.d/gaia.conf << SDDMEOF
 [Autologin]
 User=user
-Session=plasma
+Session=${PLASMA_SESSION}
 
 [Theme]
 Current=breeze
 
 [General]
 InputMethod=
-EOF
+SDDMEOF
 
 # --- KDE Plasma Global Theme & Colors ---
 # Skeleton config for all new users (and the live user)
