@@ -1,9 +1,9 @@
 #!/bin/bash
-# Gaia Linux - Post-install customization hook
+# Gaia Linux - Post-install customization hook (KDE Plasma 6)
 
 set -e
 
-echo "=== Gaia Linux Customization ==="
+echo "=== Gaia Linux Customization (KDE Plasma 6) ==="
 
 # Set default shell to zsh for new users
 sed -i 's|DSHELL=/bin/bash|DSHELL=/bin/zsh|' /etc/default/useradd 2>/dev/null || true
@@ -17,60 +17,172 @@ PRETTY_NAME="Gaia Linux"
 NAME="Gaia"
 ID=gaia
 ID_LIKE=debian
-VERSION_CODENAME=bookworm
+VERSION_CODENAME=trixie
 HOME_URL="https://github.com/gaialinux"
 EOF
 
-# Set LightDM autologin for live session
-if [ -f /etc/lightdm/lightdm.conf ]; then
-    sed -i 's/#autologin-user=/autologin-user=user/' /etc/lightdm/lightdm.conf
-fi
+# --- SDDM Configuration ---
+mkdir -p /etc/sddm.conf.d
 
-# LightDM greeter config with Gaia wallpaper
-mkdir -p /etc/lightdm
-cat > /etc/lightdm/lightdm-gtk-greeter.conf << 'EOF'
-[greeter]
-background=/usr/share/backgrounds/gaia/wallpaper.png
-theme-name=Arc-Dark
-icon-theme-name=Papirus-Dark
-font-name=Noto Sans 11
-indicators=~host;~spacer;~clock;~spacer;~session;~power
-clock-format=%H:%M  %a %d %b
-position=50%,center 50%,center
-panel-position=top
-default-user-image=/usr/share/pixmaps/gaia-logo.png
+# SDDM autologin for live session
+cat > /etc/sddm.conf.d/gaia.conf << 'EOF'
+[Autologin]
+User=user
+Session=plasma
+
+[Theme]
+Current=breeze
+
+[General]
+InputMethod=
 EOF
 
-# Set GRUB theme
+# --- KDE Plasma Global Theme & Colors ---
+# Skeleton config for all new users (and the live user)
+mkdir -p /etc/skel/.config
+
+# Plasma dark theme + Gaia accent color
+cat > /etc/skel/.config/kdeglobals << 'EOF'
+[General]
+ColorScheme=BreezeDark
+Name=Breeze Dark
+WidgetStyle=Breeze
+
+[Colors:View]
+BackgroundNormal=30,27,75
+ForegroundNormal=233,213,255
+
+[Colors:Selection]
+BackgroundNormal=124,58,237
+ForegroundNormal=255,255,255
+
+[Colors:Button]
+BackgroundNormal=49,46,129
+ForegroundNormal=233,213,255
+
+[Icons]
+Theme=breeze-dark
+
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop
+SingleClick=false
+AnimationDurationFactor=0.5
+EOF
+
+# Plasma accent color (purple)
+cat > /etc/skel/.config/plasmarc << 'EOF'
+[Theme]
+name=breeze-dark
+
+[Colors]
+accentColor=#7c3aed
+EOF
+
+# KWin (window manager) config
+cat > /etc/skel/.config/kwinrc << 'EOF'
+[TabBox]
+DesktopLayout=org.kde.breeze.desktop
+DesktopListLayout=org.kde.breeze.desktop
+LayoutName=org.kde.breeze.desktop
+
+[Desktops]
+Number=2
+Rows=1
+
+[Effect-overview]
+BorderActivate=9
+
+[Plugins]
+blurEnabled=true
+contrastEnabled=true
+
+[org.kde.kdecoration2]
+BorderSize=None
+BorderSizeAuto=false
+ButtonsOnLeft=XIA
+ButtonsOnRight=
+library=org.kde.breeze
+theme=Breeze
+EOF
+
+# Wallpaper for Plasma desktop
+cat > /etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc << 'EOF'
+[Containments][1]
+activityId=
+formfactor=0
+immutability=1
+lastScreen=0
+location=0
+plugin=org.kde.plasma.folder
+wallpaperplugin=org.kde.image
+
+[Containments][1][Wallpaper][org.kde.image][General]
+Image=file:///usr/share/backgrounds/gaia/wallpaper.png
+FillMode=2
+EOF
+
+# Konsole profile (terminal)
+mkdir -p /etc/skel/.local/share/konsole
+cat > /etc/skel/.local/share/konsole/Gaia.profile << 'EOF'
+[Appearance]
+ColorScheme=Breeze
+Font=Hack,12,-1,5,50,0,0,0,0,0
+
+[General]
+Command=/bin/zsh
+Name=Gaia
+Parent=FALLBACK/
+
+[Scrolling]
+HistoryMode=2
+EOF
+
+cat > /etc/skel/.config/konsolerc << 'EOF'
+[Desktop Entry]
+DefaultProfile=Gaia.profile
+
+[TabBar]
+TabBarVisibility=ShowTabBarWhenNeeded
+EOF
+
+# GTK apps should follow the dark theme
+mkdir -p /etc/skel/.config/gtk-3.0
+cat > /etc/skel/.config/gtk-3.0/settings.ini << 'EOF'
+[Settings]
+gtk-theme-name=Breeze-Dark
+gtk-icon-theme-name=breeze-dark
+gtk-font-name=Noto Sans 10
+gtk-cursor-theme-name=breeze_cursors
+gtk-application-prefer-dark-theme=true
+EOF
+
+mkdir -p /etc/skel/.config/gtk-4.0
+cat > /etc/skel/.config/gtk-4.0/settings.ini << 'EOF'
+[Settings]
+gtk-theme-name=Breeze-Dark
+gtk-icon-theme-name=breeze-dark
+gtk-font-name=Noto Sans 10
+gtk-cursor-theme-name=breeze_cursors
+gtk-application-prefer-dark-theme=true
+EOF
+
+# --- GRUB Theme ---
 if [ -f /etc/default/grub ]; then
     sed -i 's|#GRUB_THEME=.*|GRUB_THEME=/boot/grub/themes/gaia/theme.txt|' /etc/default/grub
     echo 'GRUB_THEME=/boot/grub/themes/gaia/theme.txt' >> /etc/default/grub
     update-grub 2>/dev/null || true
 fi
 
-# Set Arc-Dark as default GTK theme
-mkdir -p /etc/skel/.config/gtk-3.0
-cat > /etc/skel/.config/gtk-3.0/settings.ini << 'EOF'
-[Settings]
-gtk-theme-name=Arc-Dark
-gtk-icon-theme-name=Papirus-Dark
-gtk-font-name=Noto Sans 11
-gtk-cursor-theme-name=Adwaita
-gtk-application-prefer-dark-theme=true
-EOF
-
-# Set Plymouth theme
+# --- Plymouth Theme ---
 if command -v plymouth-set-default-theme &> /dev/null && [ -f /usr/share/plymouth/themes/gaia/gaia.plymouth ]; then
     plymouth-set-default-theme gaia || true
 fi
 
-# Neofetch uses ASCII art from /etc/gaia-ascii.txt (configured in skel)
-
-# Make installer desktop shortcut and autoinstall script executable
+# --- Desktop shortcut for installer ---
 chmod +x /etc/skel/Desktop/gaia-installer.desktop 2>/dev/null || true
 chmod +x /usr/local/bin/gaia-autoinstall.sh 2>/dev/null || true
 
-# Polkit rule to allow live user to run Calamares
+# --- Polkit rule to allow live user to run Calamares ---
 mkdir -p /etc/polkit-1/localauthority/50-local.d
 cat > /etc/polkit-1/localauthority/50-local.d/calamares.pkla << 'EOF'
 [Allow live user to run Calamares]
@@ -81,4 +193,8 @@ ResultInactive=yes
 ResultActive=yes
 EOF
 
-echo "=== Customization complete ==="
+# --- Enable SDDM ---
+systemctl enable sddm 2>/dev/null || true
+systemctl disable lightdm 2>/dev/null || true
+
+echo "=== Customization complete (KDE Plasma 6) ==="

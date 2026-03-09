@@ -24,19 +24,25 @@ for cmd in lb debootstrap; do
     fi
 done
 
+# Generate installer banner from logo
+echo "=== Generating installer banner ==="
+bash "$SCRIPT_DIR/generate-installer-banner.sh"
+
 # Prepare build directory
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 # Initialize live-build config
-# NOTE: --debian-installer none = we use Calamares instead
+# NOTE: --debian-installer live = real Debian installer using the live filesystem
+# Calamares remains in live session as alternative
 lb config \
-    --distribution bookworm \
+    --distribution trixie \
     --archive-areas "main contrib non-free non-free-firmware" \
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootloaders "grub-efi,grub-pc" \
-    --debian-installer none \
+    --debian-installer live \
+    --debian-installer-gui true \
     --memtest none \
     --cache true \
     --cache-packages true \
@@ -63,6 +69,13 @@ fi
 echo "Copying includes.binary..."
 if [ -d "$PROJECT_DIR/config/includes.binary" ]; then
     cp -rv "$PROJECT_DIR/config/includes.binary/." "$BUILD_DIR/config/includes.binary/"
+fi
+
+# Copy installer preseed and branding (for Debian Installer)
+echo "Copying installer config..."
+if [ -d "$PROJECT_DIR/config/includes.installer" ]; then
+    mkdir -p "$BUILD_DIR/config/includes.installer"
+    cp -rv "$PROJECT_DIR/config/includes.installer/." "$BUILD_DIR/config/includes.installer/"
 fi
 
 # Copy hooks

@@ -1,0 +1,72 @@
+# Gaia Linux - Debian Installer GTK Theme
+# Overrides the default Clearlooks theme used by d-i
+
+style "gaia-default" {
+    # Background: dark indigo
+    bg[NORMAL]        = "#1e1b4b"
+    bg[PRELIGHT]      = "#312e81"
+    bg[ACTIVE]        = "#312e81"
+    bg[SELECTED]      = "#7c3aed"
+    bg[INSENSITIVE]   = "#1e1b4b"
+
+    # Foreground: light purple/white
+    fg[NORMAL]        = "#e9d5ff"
+    fg[PRELIGHT]      = "#ffffff"
+    fg[ACTIVE]        = "#ffffff"
+    fg[SELECTED]      = "#ffffff"
+    fg[INSENSITIVE]   = "#6d28d9"
+
+    # Text areas
+    text[NORMAL]      = "#e9d5ff"
+    text[PRELIGHT]    = "#ffffff"
+    text[ACTIVE]      = "#ffffff"
+    text[SELECTED]    = "#ffffff"
+    text[INSENSITIVE] = "#6d28d9"
+
+    # Base (text entry backgrounds)
+    base[NORMAL]      = "#312e81"
+    base[PRELIGHT]    = "#3b3590"
+    base[ACTIVE]      = "#4c1d95"
+    base[SELECTED]    = "#7c3aed"
+    base[INSENSITIVE] = "#1e1b4b"
+
+    engine "clearlooks" {
+        colorize_scrollbar = TRUE
+        style = GLOSSY
+    }
+}
+
+style "gaia-button" = "gaia-default" {
+    bg[NORMAL]   = "#6d28d9"
+    bg[PRELIGHT] = "#7c3aed"
+    bg[ACTIVE]   = "#5b21b6"
+    fg[NORMAL]   = "#ffffff"
+    fg[PRELIGHT] = "#ffffff"
+    fg[ACTIVE]   = "#ffffff"
+}
+
+style "gaia-menubar" = "gaia-default" {
+    bg[NORMAL] = "#0f0d2e"
+}
+
+style "gaia-progressbar" = "gaia-default" {
+    bg[NORMAL]   = "#312e81"
+    bg[SELECTED] = "#7c3aed"
+    fg[PRELIGHT] = "#ffffff"
+}
+
+style "gaia-entry" = "gaia-default" {
+    base[NORMAL]   = "#312e81"
+    base[ACTIVE]   = "#4c1d95"
+    base[SELECTED] = "#7c3aed"
+    text[NORMAL]   = "#e9d5ff"
+}
+
+class "GtkWidget"      style "gaia-default"
+class "GtkButton"      style "gaia-button"
+class "GtkMenuBar"     style "gaia-menubar"
+class "GtkProgressBar" style "gaia-progressbar"
+class "GtkEntry"       style "gaia-entry"
+class "GtkTextView"    style "gaia-entry"
+
+widget_class "*<GtkButton>*" style "gaia-button"

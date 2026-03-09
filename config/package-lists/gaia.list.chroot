@@ -1,11 +1,40 @@
-# Gaia Linux - Core Packages
+# Gaia Linux - Core Packages (KDE Plasma 6 / Debian Trixie)
 
-# Desktop Environment
+# KDE Plasma Desktop
+plasma-desktop
+plasma-workspace
+sddm
+sddm-theme-breeze
+
+# KDE Core Apps
+dolphin
+konsole
+kate
+ark
+spectacle
+gwenview
+okular
+kcalc
+kde-spectacle
+kscreen
+plasma-systemmonitor
+plasma-nm
+plasma-pa
+bluedevil
+powerdevil
+kde-config-sddm
+
+# KDE Frameworks & Integration
+frameworkintegration
+breeze
+breeze-gtk-theme
+breeze-icon-theme
+kde-cli-tools
+
+# Wayland + X11 (Plasma 6 is Wayland-first)
+plasma-workspace-wayland
+xwayland
 xorg
-xfce4
-xfce4-goodies
-lightdm
-lightdm-gtk-greeter
 
 # System
 linux-image-amd64
@@ -13,20 +42,16 @@ firmware-linux-free
 firmware-linux-nonfree
 sudo
 network-manager
-network-manager-gnome
 pulseaudio
-pavucontrol
+pipewire
+pipewire-pulse
+wireplumber
 blueman
 
 # Terminal & Shell
 bash
 zsh
 alacritty
-
-# File Manager
-thunar
-thunar-archive-plugin
-file-roller
 
 # Web Browser
 firefox-esr
@@ -44,10 +69,7 @@ wmctrl
 # Fonts
 fonts-noto
 fonts-liberation2
-
-# Theming
-arc-theme
-papirus-icon-theme
+fonts-hack
 
 # Boot
 plymouth
@@ -58,7 +80,7 @@ grub-pc-bin
 shim-signed
 efibootmgr
 
-# Installer
+# Installer (Calamares in live session)
 calamares
 calamares-settings-debian
 os-prober

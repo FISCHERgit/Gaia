@@ -4,10 +4,10 @@ componentName: gaia
 strings:
     productName:         "Gaia Linux"
     shortProductName:    "Gaia"
-    version:             1.0
-    shortVersion:        1.0
-    versionedName:       "Gaia Linux 1.0"
-    shortVersionedName:  "Gaia 1.0"
+    version:             2.0
+    shortVersion:        2.0
+    versionedName:       "Gaia Linux 2.0"
+    shortVersionedName:  "Gaia 2.0"
     bootloaderEntryName: "Gaia Linux"
     productUrl:          https://github.com/FISCHERgit/Gaia
     supportUrl:          https://github.com/FISCHERgit/Gaia/issues
