@@ -1,36 +1,47 @@
 # Gaia Linux - Core Packages (KDE Plasma 6 / Debian Trixie)
+# Minimal Plasma install — no meta-package bloat
 
-# KDE Plasma Desktop (meta-package pulls everything needed)
-kde-plasma-desktop
+# KDE Plasma Core (individual packages, not the heavy meta)
+plasma-desktop
+plasma-workspace
+kwin-x11
+kwin-wayland
 sddm
+plasma-nm
+plasma-pa
+powerdevil
+bluedevil
+kscreen
+systemsettings
+polkit-kde-agent-1
 
-# KDE Core Apps
+# KDE Apps (minimal set)
 dolphin
 konsole
 kate
 ark
 kde-spectacle
-gwenview
-okular
 kcalc
-kscreen
-plasma-systemmonitor
-plasma-nm
-plasma-pa
-bluedevil
-powerdevil
 
-# KDE Frameworks & Integration
+# KDE Theming
 breeze
 breeze-gtk-theme
 breeze-icon-theme
+breeze-cursor-theme
 kde-cli-tools
+frameworkintegration
 
 # Wayland + X11
 xwayland
 xorg
 xserver-xorg-video-all
 xserver-xorg-input-all
+
+# VM Guest Tools (auto-detected, no overhead on bare metal)
+spice-vdagent
+qemu-guest-agent
+open-vm-tools
+open-vm-tools-desktop
 
 # System
 linux-image-amd64

@@ -25,9 +25,9 @@ EOF
 mkdir -p /etc/sddm.conf.d
 
 # SDDM autologin for live session
-# Detect available session file
+# Prefer X11 session (better VM compatibility, Wayland can be chosen manually)
 PLASMA_SESSION=""
-for s in /usr/share/xsessions/plasma.desktop /usr/share/wayland-sessions/plasma.desktop /usr/share/xsessions/plasmax11.desktop; do
+for s in /usr/share/xsessions/plasmax11.desktop /usr/share/xsessions/plasma.desktop; do
     if [ -f "$s" ]; then
         PLASMA_SESSION="$(basename "$s" .desktop)"
         break
@@ -107,30 +107,39 @@ DesktopListLayout=org.kde.breeze.desktop
 LayoutName=org.kde.breeze.desktop
 
 [Desktops]
-Number=2
+Number=1
 Rows=1
-
-[Effect-overview]
-BorderActivate=9
 
 [Compositing]
 Backend=OpenGL
+Enabled=true
 GLCore=true
+GLPreferBufferSwap=a
 LatencyPolicy=Low
 MaxFPS=60
+OpenGLIsUnsafe=false
 VBlankTime=6000
 WindowsBlockCompositing=true
+AnimationSpeed=1
 
 [Plugins]
 blurEnabled=false
 contrastEnabled=false
 slideEnabled=false
-fadeEnabled=true
+fadeEnabled=false
 loginEnabled=false
 logoutEnabled=false
 maximizeEnabled=false
 squashEnabled=false
 translucencyEnabled=false
+kwin4_effect_scaleEnabled=false
+kwin4_effect_fadingpopupsEnabled=false
+kwin4_effect_morphingpopupsEnabled=false
+kwin4_effect_dimscreenEnabled=false
+kwin4_effect_fullscreenEnabled=false
+kwin4_effect_dialogparentEnabled=false
+overviewEnabled=false
+screenedgeEnabled=false
 
 [org.kde.kdecoration2]
 BorderSize=None
@@ -139,6 +148,10 @@ ButtonsOnLeft=XIA
 ButtonsOnRight=
 library=org.kde.breeze
 theme=Breeze
+
+[Windows]
+Placement=Smart
+FocusPolicy=ClickToFocus
 EOF
 
 # Disable Baloo file indexer (big performance gain)
@@ -354,11 +367,27 @@ MARKER="$HOME/.gaia-configured"
 [ -f "$MARKER" ] && exit 0
 
 # Copy all skel configs
+mkdir -p "$HOME/.config" "$HOME/.local/share/konsole"
 cp -rn /etc/skel/.config/* "$HOME/.config/" 2>/dev/null || true
-mkdir -p "$HOME/.local/share/konsole"
 cp -rn /etc/skel/.local/share/konsole/* "$HOME/.local/share/konsole/" 2>/dev/null || true
 
-# Force wallpaper and theme via Plasma scripting
+# VM detection — optimize for virtual machines
+IS_VM=false
+if systemd-detect-virt -q 2>/dev/null; then
+    IS_VM=true
+fi
+
+if [ "$IS_VM" = true ]; then
+    echo "VM detected — applying VM optimizations"
+
+    # Disable compositor in VMs (huge performance gain)
+    kwriteconfig6 --file kwinrc --group Compositing --key Enabled false 2>/dev/null || true
+
+    # Reduce desktop effects to zero
+    kwriteconfig6 --file kdeglobals --group KDE --key AnimationDurationFactor 0 2>/dev/null || true
+fi
+
+# Force wallpaper and theme via Plasma CLI tools
 if command -v plasma-apply-wallpaperimage &> /dev/null; then
     plasma-apply-wallpaperimage /usr/share/backgrounds/gaia/wallpaper.png 2>/dev/null || true
 fi
@@ -369,7 +398,7 @@ if command -v plasma-apply-colorscheme &> /dev/null; then
     plasma-apply-colorscheme BreezeDark 2>/dev/null || true
 fi
 
-# Disable Baloo
+# Disable Baloo file indexer
 balooctl6 disable 2>/dev/null || balooctl disable 2>/dev/null || true
 
 touch "$MARKER"

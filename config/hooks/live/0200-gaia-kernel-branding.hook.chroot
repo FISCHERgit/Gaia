@@ -1,68 +1,37 @@
 #!/bin/bash
 # Gaia Linux - Kernel Branding Hook
-# Renames the Debian kernel to show "Gaia" in uname output
-# This creates a wrapper that makes the system report as "Gaia Linux"
+# Lightweight branding — symlinks only, no copies
 
 set -e
 
 echo "=== Gaia Kernel Branding ==="
 
-# Get current kernel version
 KERNEL_VER=$(ls /lib/modules/ | sort -V | tail -1)
-echo "Kernel version: $KERNEL_VER"
-
-# Create Gaia kernel version string
 GAIA_KERNEL="${KERNEL_VER%-amd64}-gaia"
 
-# Rename kernel modules directory
-if [ -d "/lib/modules/$KERNEL_VER" ] && [ "$KERNEL_VER" != "$GAIA_KERNEL" ]; then
-    cp -a "/lib/modules/$KERNEL_VER" "/lib/modules/$GAIA_KERNEL"
+echo "  Original: $KERNEL_VER"
+echo "  Gaia:     $GAIA_KERNEL"
 
-    # Update modules.dep paths
-    if [ -f "/lib/modules/$GAIA_KERNEL/modules.dep" ]; then
-        sed -i "s|$KERNEL_VER|$GAIA_KERNEL|g" "/lib/modules/$GAIA_KERNEL/modules.dep" 2>/dev/null || true
-        sed -i "s|$KERNEL_VER|$GAIA_KERNEL|g" "/lib/modules/$GAIA_KERNEL/modules.dep.bin" 2>/dev/null || true
-    fi
-
-    echo "Created modules dir: /lib/modules/$GAIA_KERNEL"
+# Symlink modules dir (no copy = no extra disk space)
+if [ -d "/lib/modules/$KERNEL_VER" ] && [ ! -e "/lib/modules/$GAIA_KERNEL" ]; then
+    ln -s "$KERNEL_VER" "/lib/modules/$GAIA_KERNEL"
 fi
 
-# Copy kernel image with gaia name
-if [ -f "/boot/vmlinuz-$KERNEL_VER" ]; then
-    cp "/boot/vmlinuz-$KERNEL_VER" "/boot/vmlinuz-$GAIA_KERNEL"
-    echo "Created: /boot/vmlinuz-$GAIA_KERNEL"
-fi
-
-if [ -f "/boot/initrd.img-$KERNEL_VER" ]; then
-    cp "/boot/initrd.img-$KERNEL_VER" "/boot/initrd.img-$GAIA_KERNEL"
-    echo "Created: /boot/initrd.img-$GAIA_KERNEL"
-fi
-
-# Create uname wrapper that reports Gaia kernel
+# uname wrapper
 cat > /usr/local/bin/uname << UNAMEEOF
 #!/bin/bash
-# Gaia Linux uname wrapper
-if [[ "\$*" == *"-r"* ]] || [[ "\$*" == *"-a"* ]]; then
-    /usr/bin/uname "\$@" | sed 's/$KERNEL_VER/$GAIA_KERNEL/g; s/Debian/Gaia Linux/g'
-else
-    /usr/bin/uname "\$@"
-fi
+/usr/bin/uname "\$@" | sed 's/$KERNEL_VER/$GAIA_KERNEL/g; s/Debian/Gaia Linux/g'
 UNAMEEOF
 chmod +x /usr/local/bin/uname
 
-# Override /etc/debian_version with Gaia branding
+# Branding files
 echo "Gaia Linux (based on Debian Trixie)" > /etc/debian_version
 
-# Update lsb-release if it exists
-if [ -f /etc/lsb-release ]; then
-    cat > /etc/lsb-release << 'EOF'
+cat > /etc/lsb-release << 'EOF'
 DISTRIB_ID=Gaia
 DISTRIB_RELEASE=2.0
 DISTRIB_CODENAME=trixie
 DISTRIB_DESCRIPTION="Gaia Linux 2.0"
 EOF
-fi
 
 echo "=== Kernel branding complete ==="
-echo "  Original: $KERNEL_VER"
-echo "  Gaia:     $GAIA_KERNEL"
