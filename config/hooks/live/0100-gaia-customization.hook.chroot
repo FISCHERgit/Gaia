@@ -47,6 +47,17 @@ Current=breeze
 InputMethod=
 SDDMEOF
 
+# SDDM background wallpaper
+mkdir -p /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/gaia-theme.conf << 'EOF'
+[Theme]
+Current=breeze
+CursorTheme=breeze_cursors
+
+[Theme-Breeze]
+Background=/usr/share/backgrounds/gaia/wallpaper.png
+EOF
+
 # --- KDE Plasma Global Theme & Colors ---
 # Skeleton config for all new users (and the live user)
 mkdir -p /etc/skel/.config
@@ -76,7 +87,7 @@ Theme=breeze-dark
 [KDE]
 LookAndFeelPackage=org.kde.breezedark.desktop
 SingleClick=false
-AnimationDurationFactor=0.5
+AnimationDurationFactor=0.25
 EOF
 
 # Plasma accent color (purple)
@@ -88,7 +99,7 @@ name=breeze-dark
 accentColor=#7c3aed
 EOF
 
-# KWin (window manager) config
+# KWin (window manager) config + performance
 cat > /etc/skel/.config/kwinrc << 'EOF'
 [TabBox]
 DesktopLayout=org.kde.breeze.desktop
@@ -102,9 +113,24 @@ Rows=1
 [Effect-overview]
 BorderActivate=9
 
+[Compositing]
+Backend=OpenGL
+GLCore=true
+LatencyPolicy=Low
+MaxFPS=60
+VBlankTime=6000
+WindowsBlockCompositing=true
+
 [Plugins]
-blurEnabled=true
-contrastEnabled=true
+blurEnabled=false
+contrastEnabled=false
+slideEnabled=false
+fadeEnabled=true
+loginEnabled=false
+logoutEnabled=false
+maximizeEnabled=false
+squashEnabled=false
+translucencyEnabled=false
 
 [org.kde.kdecoration2]
 BorderSize=None
@@ -113,6 +139,12 @@ ButtonsOnLeft=XIA
 ButtonsOnRight=
 library=org.kde.breeze
 theme=Breeze
+EOF
+
+# Disable Baloo file indexer (big performance gain)
+cat > /etc/skel/.config/baloofilerc << 'EOF'
+[Basic Settings]
+Indexing-Enabled=false
 EOF
 
 # Wallpaper for Plasma desktop
@@ -127,6 +159,15 @@ plugin=org.kde.plasma.folder
 wallpaperplugin=org.kde.image
 
 [Containments][1][Wallpaper][org.kde.image][General]
+Image=file:///usr/share/backgrounds/gaia/wallpaper.png
+FillMode=2
+SlidePaths=
+EOF
+
+# Ensure Plasma uses our wallpaper as default for all activities
+mkdir -p /etc/skel/.config
+cat > /etc/skel/.config/kscreenlockerrc << 'EOF'
+[Greeter][Wallpaper][org.kde.image][General]
 Image=file:///usr/share/backgrounds/gaia/wallpaper.png
 FillMode=2
 EOF
@@ -195,6 +236,72 @@ fi
 # --- Plymouth Theme ---
 if command -v plymouth-set-default-theme &> /dev/null && [ -f /usr/share/plymouth/themes/gaia/gaia.plymouth ]; then
     plymouth-set-default-theme gaia || true
+fi
+
+# --- Replace KDE logos with Gaia logo ---
+GAIA_LOGO="/usr/share/pixmaps/gaia-logo.png"
+if [ -f "$GAIA_LOGO" ]; then
+    # Replace KDE start menu logo (Kickoff)
+    for kde_logo in \
+        /usr/share/plasma/desktoptheme/default/icons/start.svg \
+        /usr/share/plasma/desktoptheme/breeze-dark/icons/start.svg \
+        /usr/share/plasma/desktoptheme/default/icons/start.svgz \
+        /usr/share/plasma/desktoptheme/breeze-dark/icons/start.svgz; do
+        if [ -f "$kde_logo" ]; then
+            mv "$kde_logo" "${kde_logo}.bak"
+        fi
+    done
+
+    # Copy Gaia logo as distributor logo (used by KDE in About, Kickoff, etc.)
+    cp "$GAIA_LOGO" /usr/share/pixmaps/distributor-logo.png 2>/dev/null || true
+
+    # Replace KDE/Debian logo in hicolor icons
+    for size in 16 22 24 32 48 64 128 256; do
+        ICON_DIR="/usr/share/icons/hicolor/${size}x${size}/apps"
+        if [ -d "$ICON_DIR" ]; then
+            cp "$GAIA_LOGO" "$ICON_DIR/distributor-logo.png" 2>/dev/null || true
+            cp "$GAIA_LOGO" "$ICON_DIR/start-here-kde.png" 2>/dev/null || true
+        fi
+    done
+
+    # Kickoff start menu: use Gaia logo instead of KDE logo
+    mkdir -p /etc/skel/.config
+    cat >> /etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc << 'KICKEOF'
+
+[Containments][2]
+activityId=
+formfactor=2
+immutability=1
+lastScreen=0
+location=4
+plugin=org.kde.panel
+
+[Containments][2][Applets][3]
+immutability=1
+plugin=org.kde.plasma.kickoff
+
+[Containments][2][Applets][3][Configuration][General]
+icon=/usr/share/pixmaps/gaia-logo.png
+favoritesPortedToKAstats=true
+KICKEOF
+fi
+
+# Set Gaia wallpaper as Plasma system default
+mkdir -p /usr/share/wallpapers/Gaia/contents/images
+cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Gaia/contents/images/ 2>/dev/null || true
+cat > /usr/share/wallpapers/Gaia/metadata.json << 'EOF'
+{
+    "KPlugin": {
+        "Id": "Gaia",
+        "Name": "Gaia Linux",
+        "Authors": [{ "Name": "Gaia Project" }]
+    }
+}
+EOF
+
+# Override Plasma default wallpaper
+if [ -d /usr/share/plasma/desktoptheme/default/wallpaper ]; then
+    cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/plasma/desktoptheme/default/wallpaper/ 2>/dev/null || true
 fi
 
 # --- Desktop shortcut for installer ---
