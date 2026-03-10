@@ -176,10 +176,19 @@ gtk-cursor-theme-name=breeze_cursors
 gtk-application-prefer-dark-theme=true
 EOF
 
-# --- GRUB Theme ---
+# --- GRUB Theme + Performance ---
 if [ -f /etc/default/grub ]; then
-    sed -i 's|#GRUB_THEME=.*|GRUB_THEME=/boot/grub/themes/gaia/theme.txt|' /etc/default/grub
-    echo 'GRUB_THEME=/boot/grub/themes/gaia/theme.txt' >> /etc/default/grub
+    # Remove any existing GRUB_THEME lines, then set ours
+    sed -i '/GRUB_THEME/d' /etc/default/grub
+    sed -i '/GRUB_TIMEOUT/d' /etc/default/grub
+    sed -i '/GRUB_GFXMODE/d' /etc/default/grub
+    sed -i '/GRUB_GFXPAYLOAD_LINUX/d' /etc/default/grub
+    cat >> /etc/default/grub << 'GRUBEOF'
+GRUB_THEME=/boot/grub/themes/gaia/theme.txt
+GRUB_TIMEOUT=3
+GRUB_GFXMODE=auto
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUBEOF
     update-grub 2>/dev/null || true
 fi
 
@@ -206,5 +215,26 @@ EOF
 # --- Enable SDDM ---
 systemctl enable sddm 2>/dev/null || true
 systemctl disable lightdm 2>/dev/null || true
+
+# --- Boot Performance ---
+# Reduce systemd timeout for slow services
+mkdir -p /etc/systemd/system.conf.d
+cat > /etc/systemd/system.conf.d/gaia-performance.conf << 'EOF'
+[Manager]
+DefaultTimeoutStartSec=10s
+DefaultTimeoutStopSec=10s
+EOF
+
+# Faster shutdown
+mkdir -p /etc/systemd/logind.conf.d
+cat > /etc/systemd/logind.conf.d/gaia.conf << 'EOF'
+[Login]
+InhibitDelayMaxSec=5
+EOF
+
+# Disable unnecessary services for faster boot
+systemctl disable apt-daily.timer 2>/dev/null || true
+systemctl disable apt-daily-upgrade.timer 2>/dev/null || true
+systemctl disable ModemManager.service 2>/dev/null || true
 
 echo "=== Customization complete (KDE Plasma 6) ==="
