@@ -13,28 +13,40 @@ OUTPUT="$PROJECT_DIR/config/includes.installer/usr/share/graphics/logo_debian.pn
 mkdir -p "$(dirname "$OUTPUT")"
 
 if command -v convert &> /dev/null; then
-    # Create banner: dark indigo background, logo on left, "Gaia Linux" text
-    convert -size 800x75 xc:"#1e1b4b" \
-        \( "$LOGO" -resize x55 -gravity center \) \
-        -gravity West -geometry +15+0 -composite \
-        -font "Noto-Sans" -pointsize 28 -fill "#e9d5ff" \
-        -gravity West -annotate +80+0 "Gaia Linux Installer" \
-        -font "Noto-Sans" -pointsize 12 -fill "#c4b5fd" \
-        -gravity East -annotate +15+0 "Powered by Debian" \
+    # Create a polished banner with gradient background, logo, and text
+    convert -size 800x75 \
+        \( xc:"#0f0d2e" xc:"#1e1b4b" +append -resize 800x75\! \) \
+        \( "$LOGO" -resize x50 -gravity center \) \
+        -gravity West -geometry +20+0 -composite \
+        -font "Noto-Sans-Bold" -pointsize 26 -fill "#e9d5ff" \
+        -gravity West -annotate +85+0 "Gaia Linux" \
+        -font "Noto-Sans" -pointsize 13 -fill "#a78bfa" \
+        -gravity West -annotate +85+22 "Installation" \
+        -font "Noto-Sans" -pointsize 11 -fill "#6d28d9" \
+        -gravity East -annotate +20+0 "Powered by Debian" \
+        \( -size 800x2 xc:"#7c3aed" \) -gravity South -composite \
         "$OUTPUT"
 elif command -v python3 &> /dev/null; then
-    echo "Warning: ImageMagick not found. Creating solid-color banner with Python3."
+    echo "Warning: ImageMagick not found. Creating gradient banner with Python3."
     python3 - "$OUTPUT" << 'PYEOF'
 import struct, zlib, sys
 
 output_path = sys.argv[1]
 width, height = 800, 75
-r, g, b = 0x1e, 0x1b, 0x4b  # dark indigo #1e1b4b
 
+# Gradient from #0f0d2e to #1e1b4b with purple accent line at bottom
 raw = b''
 for y in range(height):
     raw += b'\x00'
     for x in range(width):
+        t = x / width
+        if y >= height - 2:
+            # Purple accent line at bottom
+            r, g, b = 0x7c, 0x3a, 0xed
+        else:
+            r = int(0x0f + (0x1e - 0x0f) * t)
+            g = int(0x0d + (0x1b - 0x0d) * t)
+            b = int(0x2e + (0x4b - 0x2e) * t)
         raw += bytes([r, g, b])
 
 def chunk(ctype, data):
@@ -47,11 +59,10 @@ with open(output_path, 'wb') as f:
     f.write(chunk(b'IDAT', zlib.compress(raw)))
     f.write(chunk(b'IEND', b''))
 
-print(f"Created fallback banner: {output_path}")
+print(f"Created gradient banner: {output_path}")
 PYEOF
 else
-    echo "Error: Neither ImageMagick nor Python3 available. Cannot generate banner."
-    echo "Please manually create: $OUTPUT (800x75 PNG)"
+    echo "Error: Neither ImageMagick nor Python3 available."
     exit 1
 fi
 

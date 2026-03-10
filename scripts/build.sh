@@ -24,9 +24,11 @@ for cmd in lb debootstrap; do
     fi
 done
 
-# Generate installer banner from logo
+# Generate installer assets
 echo "=== Generating installer banner ==="
 bash "$SCRIPT_DIR/generate-installer-banner.sh"
+echo "=== Generating installer wallpaper ==="
+bash "$SCRIPT_DIR/generate-installer-wallpaper.sh"
 
 # Prepare build directory
 mkdir -p "$BUILD_DIR"
