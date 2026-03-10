@@ -344,4 +344,53 @@ systemctl disable apt-daily.timer 2>/dev/null || true
 systemctl disable apt-daily-upgrade.timer 2>/dev/null || true
 systemctl disable ModemManager.service 2>/dev/null || true
 
+# --- Apply configs to live user at first login ---
+# live-config creates user "user" at boot but doesn't always copy all skel dotfiles
+# This script ensures all Gaia configs are applied on first login
+cat > /usr/local/bin/gaia-apply-config.sh << 'APPLYEOF'
+#!/bin/bash
+# Apply Gaia desktop configs for current user (runs once at first login)
+MARKER="$HOME/.gaia-configured"
+[ -f "$MARKER" ] && exit 0
+
+# Copy all skel configs
+cp -rn /etc/skel/.config/* "$HOME/.config/" 2>/dev/null || true
+mkdir -p "$HOME/.local/share/konsole"
+cp -rn /etc/skel/.local/share/konsole/* "$HOME/.local/share/konsole/" 2>/dev/null || true
+
+# Force wallpaper and theme via Plasma scripting
+if command -v plasma-apply-wallpaperimage &> /dev/null; then
+    plasma-apply-wallpaperimage /usr/share/backgrounds/gaia/wallpaper.png 2>/dev/null || true
+fi
+if command -v plasma-apply-lookandfeel &> /dev/null; then
+    plasma-apply-lookandfeel --apply org.kde.breezedark.desktop 2>/dev/null || true
+fi
+if command -v plasma-apply-colorscheme &> /dev/null; then
+    plasma-apply-colorscheme BreezeDark 2>/dev/null || true
+fi
+
+# Disable Baloo
+balooctl6 disable 2>/dev/null || balooctl disable 2>/dev/null || true
+
+touch "$MARKER"
+APPLYEOF
+chmod +x /usr/local/bin/gaia-apply-config.sh
+
+# Autostart for gaia-apply-config
+mkdir -p /etc/skel/.config/autostart
+cat > /etc/skel/.config/autostart/gaia-apply-config.desktop << 'EOF'
+[Desktop Entry]
+Type=Application
+Name=Gaia Config
+Exec=/usr/local/bin/gaia-apply-config.sh
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-phase=2
+EOF
+
+# Also ensure it's in /etc/xdg/autostart so it runs for ALL users including live
+mkdir -p /etc/xdg/autostart
+cp /etc/skel/.config/autostart/gaia-apply-config.desktop /etc/xdg/autostart/
+
 echo "=== Customization complete (KDE Plasma 6) ==="
