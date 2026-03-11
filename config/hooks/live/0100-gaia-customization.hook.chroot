@@ -207,7 +207,8 @@ rm -rf /usr/share/wallpapers/default
 ln -sf /usr/share/wallpapers/Gaia /usr/share/wallpapers/default
 
 # 3. Override Plasma shell defaults (the actual config Plasma reads for new users)
-mkdir -p /usr/share/plasma/shells/org.kde.plasma.desktop/contents/defaults
+mkdir -p /usr/share/plasma/shells/org.kde.plasma.desktop/contents
+rm -rf /usr/share/plasma/shells/org.kde.plasma.desktop/contents/defaults
 cat > /usr/share/plasma/shells/org.kde.plasma.desktop/contents/defaults << 'EOF'
 [Desktop][Containments][General]
 Image=file:///usr/share/backgrounds/gaia/wallpaper.png
