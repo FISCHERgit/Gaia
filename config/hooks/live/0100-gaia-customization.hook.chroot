@@ -190,15 +190,52 @@ Image=file:///usr/share/backgrounds/gaia/wallpaper.png
 FillMode=2
 EOF
 
-# Override the Plasma Breeze default wallpaper package
-mkdir -p /usr/share/wallpapers/Next/contents/images
-cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Next/contents/images/3840x2160.png 2>/dev/null || true
-cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Next/contents/images/1920x1080.png 2>/dev/null || true
-# Also override the "default" symlink if it points to Next
-if [ -L /usr/share/wallpapers/default ] || [ ! -e /usr/share/wallpapers/default ]; then
-    rm -f /usr/share/wallpapers/default
-    ln -s /usr/share/wallpapers/Gaia /usr/share/wallpapers/default
-fi
+# --- FORCE Gaia wallpaper as the ONLY default everywhere ---
+
+# 1. Override ALL Plasma default wallpaper packages (Next, Breeze, default)
+for wpdir in Next Breeze default; do
+    mkdir -p "/usr/share/wallpapers/$wpdir/contents/images"
+    for res in 3840x2160 2560x1440 1920x1200 1920x1080 1680x1050 1440x900 1366x768 1280x1024 1024x768; do
+        cp /usr/share/backgrounds/gaia/wallpaper.png "/usr/share/wallpapers/$wpdir/contents/images/${res}.png" 2>/dev/null || true
+    done
+    # Also set screenshot preview
+    cp /usr/share/backgrounds/gaia/wallpaper.png "/usr/share/wallpapers/$wpdir/contents/screenshot.png" 2>/dev/null || true
+done
+
+# 2. Symlink /usr/share/wallpapers/default -> Gaia
+rm -rf /usr/share/wallpapers/default
+ln -sf /usr/share/wallpapers/Gaia /usr/share/wallpapers/default
+
+# 3. Override Plasma shell defaults (the actual config Plasma reads for new users)
+mkdir -p /usr/share/plasma/shells/org.kde.plasma.desktop/contents/defaults
+cat > /usr/share/plasma/shells/org.kde.plasma.desktop/contents/defaults << 'EOF'
+[Desktop][Containments][General]
+Image=file:///usr/share/backgrounds/gaia/wallpaper.png
+
+[Wallpaper]
+defaultWallpaperTheme=Gaia
+defaultFileSuffix=.png
+defaultWidth=1920
+defaultHeight=1080
+EOF
+
+# 4. Override the Plasma desktop default layout
+mkdir -p /usr/share/plasma/shells/org.kde.plasma.desktop/contents
+cat > /usr/share/plasma/shells/org.kde.plasma.desktop/contents/layout.js << 'LAYOUTEOF'
+var wallpaper = desktops()[0];
+wallpaper.wallpaperPlugin = "org.kde.image";
+wallpaper.currentConfigGroup = Array("Wallpaper", "org.kde.image", "General");
+wallpaper.writeConfig("Image", "file:///usr/share/backgrounds/gaia/wallpaper.png");
+wallpaper.writeConfig("FillMode", 2);
+LAYOUTEOF
+
+# 5. Set SDDM / lock screen wallpaper
+mkdir -p /usr/share/sddm/themes/breeze
+cat > /usr/share/sddm/themes/breeze/theme.conf.user << 'EOF'
+[General]
+background=/usr/share/backgrounds/gaia/wallpaper.png
+type=image
+EOF
 
 # Ensure Plasma uses our wallpaper as default for all activities
 mkdir -p /etc/skel/.config
@@ -322,9 +359,13 @@ favoritesPortedToKAstats=true
 KICKEOF
 fi
 
-# Set Gaia wallpaper as Plasma system default
+# Set Gaia wallpaper as Plasma system default (with all resolutions)
 mkdir -p /usr/share/wallpapers/Gaia/contents/images
-cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Gaia/contents/images/ 2>/dev/null || true
+for res in 3840x2160 2560x1440 1920x1200 1920x1080 1680x1050 1440x900 1366x768 1280x1024 1024x768; do
+    cp /usr/share/backgrounds/gaia/wallpaper.png "/usr/share/wallpapers/Gaia/contents/images/${res}.png" 2>/dev/null || true
+done
+cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Gaia/contents/screenshot.png 2>/dev/null || true
+
 cat > /usr/share/wallpapers/Gaia/metadata.json << 'EOF'
 {
     "KPlugin": {
@@ -335,10 +376,13 @@ cat > /usr/share/wallpapers/Gaia/metadata.json << 'EOF'
 }
 EOF
 
-# Override Plasma default wallpaper
+# Override Plasma default wallpaper and desktop theme
 if [ -d /usr/share/plasma/desktoptheme/default/wallpaper ]; then
     cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/plasma/desktoptheme/default/wallpaper/ 2>/dev/null || true
 fi
+# Also put it in breeze-dark theme
+mkdir -p /usr/share/plasma/desktoptheme/breeze-dark/wallpaper
+cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/plasma/desktoptheme/breeze-dark/wallpaper/ 2>/dev/null || true
 
 # --- Desktop shortcut for installer ---
 chmod +x /etc/skel/Desktop/gaia-installer.desktop 2>/dev/null || true
@@ -482,7 +526,7 @@ fi
 balooctl6 disable 2>/dev/null || balooctl disable 2>/dev/null || true
 killall baloo_file 2>/dev/null || true
 
-# Force wallpaper and theme via Plasma CLI tools
+# Force wallpaper via Plasma CLI tools
 if command -v plasma-apply-wallpaperimage &> /dev/null; then
     plasma-apply-wallpaperimage /usr/share/backgrounds/gaia/wallpaper.png 2>/dev/null || true
 fi
@@ -491,6 +535,15 @@ if command -v plasma-apply-lookandfeel &> /dev/null; then
 fi
 if command -v plasma-apply-colorscheme &> /dev/null; then
     plasma-apply-colorscheme BreezeDark 2>/dev/null || true
+fi
+
+# Force wallpaper in Plasma config files directly (belt and suspenders)
+mkdir -p "$HOME/.config"
+kwriteconfig6 --file "$HOME/.config/plasmarc" --group Wallpapers --key usersWallpapers "/usr/share/backgrounds/gaia/wallpaper.png" 2>/dev/null || true
+
+# Overwrite plasma-org.kde.plasma.desktop-appletsrc wallpaper setting
+if [ -f "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" ]; then
+    sed -i 's|Image=.*|Image=file:///usr/share/backgrounds/gaia/wallpaper.png|g' "$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc" 2>/dev/null || true
 fi
 
 # Disable Baloo file indexer
