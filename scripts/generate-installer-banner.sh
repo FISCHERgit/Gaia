@@ -13,18 +13,16 @@ OUTPUT="$PROJECT_DIR/config/includes.installer/usr/share/graphics/logo_debian.pn
 mkdir -p "$(dirname "$OUTPUT")"
 
 if command -v convert &> /dev/null; then
-    # Create a polished banner with gradient background, logo, and text
+    # Create a clean banner with warm cream background, logo, and text
     convert -size 800x75 \
-        \( xc:"#0f0d2e" xc:"#1e1b4b" +append -resize 800x75\! \) \
-        \( "$LOGO" -resize x50 -gravity center \) \
+        \( xc:"#f5f5eb" xc:"#eeeee0" +append -resize 800x75\! \) \
+        \( "$LOGO" -resize x45 -gravity center \) \
         -gravity West -geometry +20+0 -composite \
-        -font "Noto-Sans-Bold" -pointsize 26 -fill "#e9d5ff" \
+        -font "Noto-Sans-Bold" -pointsize 26 -fill "#2a2a2a" \
         -gravity West -annotate +85+0 "Gaia Linux" \
-        -font "Noto-Sans" -pointsize 13 -fill "#a78bfa" \
+        -font "Noto-Sans" -pointsize 13 -fill "#707060" \
         -gravity West -annotate +85+22 "Installation" \
-        -font "Noto-Sans" -pointsize 11 -fill "#6d28d9" \
-        -gravity East -annotate +20+0 "Powered by Debian" \
-        \( -size 800x2 xc:"#7c3aed" \) -gravity South -composite \
+        \( -size 800x2 xc:"#8ba800" \) -gravity South -composite \
         "$OUTPUT"
 elif command -v python3 &> /dev/null; then
     echo "Warning: ImageMagick not found. Creating gradient banner with Python3."
@@ -34,19 +32,19 @@ import struct, zlib, sys
 output_path = sys.argv[1]
 width, height = 800, 75
 
-# Gradient from #0f0d2e to #1e1b4b with purple accent line at bottom
+# Gradient from #f5f5eb to #eeeee0 with green accent line at bottom
 raw = b''
 for y in range(height):
     raw += b'\x00'
     for x in range(width):
         t = x / width
         if y >= height - 2:
-            # Purple accent line at bottom
-            r, g, b = 0x7c, 0x3a, 0xed
+            # Green accent line at bottom
+            r, g, b = 0x8b, 0xa8, 0x00
         else:
-            r = int(0x0f + (0x1e - 0x0f) * t)
-            g = int(0x0d + (0x1b - 0x0d) * t)
-            b = int(0x2e + (0x4b - 0x2e) * t)
+            r = int(0xf5 + (0xee - 0xf5) * t)
+            g = int(0xf5 + (0xee - 0xf5) * t)
+            b = int(0xeb + (0xe0 - 0xeb) * t)
         raw += bytes([r, g, b])
 
 def chunk(ctype, data):

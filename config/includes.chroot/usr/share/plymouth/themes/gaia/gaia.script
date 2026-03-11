@@ -1,25 +1,23 @@
 // Gaia Linux Plymouth Boot Script — Breathing Logo Animation
+// Color scheme: warm cream/green matching Gaia wallpaper
 
-// Background: dark purple gradient
-Window.SetBackgroundTopColor(0.12, 0.11, 0.18);
-Window.SetBackgroundBottomColor(0.07, 0.06, 0.12);
+// Background: warm cream gradient matching wallpaper edges
+Window.SetBackgroundTopColor(0.96, 0.96, 0.92);
+Window.SetBackgroundBottomColor(0.90, 0.92, 0.82);
 
 // Load logo image
 logo_original = Image("logo.png");
 
 // Base size and breathing range
-base_width = 256;
+base_width = 320;
 base_height = Math.Int(base_width * logo_original.GetHeight() / logo_original.GetWidth());
-breath_range = 20;  // pixels to grow/shrink
+breath_range = 15;  // pixels to grow/shrink
 
 // Create initial sprite
 logo.sprite = Sprite(logo_original.Scale(base_width, base_height));
 logo.sprite.SetX(Window.GetWidth() / 2 - base_width / 2);
-logo.sprite.SetY(Window.GetHeight() / 2 - base_height / 2 - 40);
+logo.sprite.SetY(Window.GetHeight() / 2 - base_height / 2 - 30);
 logo.sprite.SetOpacity(1);
-
-// "LINUX" text below logo (subtle)
-// We'll use a small dot as progress indicator instead
 
 // Breathing animation counter
 progress = 0;
@@ -27,7 +25,7 @@ progress = 0;
 fun refresh_callback() {
     progress++;
 
-    // Smooth sine wave for breathing effect (slow, ~3 second cycle)
+    // Smooth sine wave for breathing effect (~3 second cycle)
     breath = Math.Sin(progress * 0.035) * breath_range;
 
     // Calculate current size
@@ -37,16 +35,16 @@ fun refresh_callback() {
     // Rescale and reposition (keep centered)
     logo.sprite.SetImage(logo_original.Scale(cur_width, cur_height));
     logo.sprite.SetX(Window.GetWidth() / 2 - cur_width / 2);
-    logo.sprite.SetY(Window.GetHeight() / 2 - cur_height / 2 - 40);
+    logo.sprite.SetY(Window.GetHeight() / 2 - cur_height / 2 - 30);
 
-    // Subtle opacity pulse synced with breathing (0.85 - 1.0)
-    opacity = 0.85 + Math.Abs(Math.Sin(progress * 0.035)) * 0.15;
+    // Subtle opacity pulse synced with breathing (0.88 - 1.0)
+    opacity = 0.88 + Math.Abs(Math.Sin(progress * 0.035)) * 0.12;
     logo.sprite.SetOpacity(opacity);
 }
 
 Plymouth.SetRefreshFunction(refresh_callback);
 
-// --- Progress bar: thin elegant line ---
+// --- Progress bar: thin elegant green line ---
 progress_box.image = Image("logo.png").Scale(1, 3);
 progress_box.sprite = Sprite(progress_box.image);
 progress_box.sprite.SetOpacity(0);
@@ -64,7 +62,7 @@ fun progress_callback(duration, progress_val) {
         progress_box.sprite.SetImage(progress_bar.original.Scale(filled_width, 3));
         progress_box.sprite.SetX(bar_x);
         progress_box.sprite.SetY(bar_y);
-        progress_box.sprite.SetOpacity(0.6);
+        progress_box.sprite.SetOpacity(0.5);
     }
 }
 

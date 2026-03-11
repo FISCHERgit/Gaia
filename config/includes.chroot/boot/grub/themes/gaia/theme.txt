@@ -1,15 +1,15 @@
 # Gaia Linux GRUB Theme
 
 title-text: ""
-desktop-color: "#1e1b4b"
-message-color: "#e9d5ff"
-message-bg-color: "#1e1b4b"
+desktop-color: "#f0f0e6"
+message-color: "#2a2a2a"
+message-bg-color: "#f0f0e6"
 terminal-font: "Unifont Regular 16"
 
 + image {
-    left = 47%
+    left = 44%
     top = 3%
-    width = 6%
+    width = 12%
     height = 10%
     file = "logo.png"
 }
@@ -19,8 +19,9 @@ terminal-font: "Unifont Regular 16"
     top = 18%
     width = 50%
     height = 55%
-    item_color = "#c4b5fd"
-    selected_item_color = "#ffffff"
+    item_color = "#505050"
+    selected_item_color = "#2a2a2a"
+    selected_item_pixmap_style = "select_*.png"
     item_height = 32
     item_padding = 8
     item_spacing = 4
@@ -33,7 +34,7 @@ terminal-font: "Unifont Regular 16"
     top = 92%
     width = 100%
     align = "center"
-    color = "#7c3aed"
+    color = "#707060"
     text = "Gaia Linux"
     font = "Unifont Regular 14"
 }
@@ -43,7 +44,7 @@ terminal-font: "Unifont Regular 16"
     top = 96%
     width = 100%
     align = "center"
-    color = "#6d28d9"
+    color = "#909080"
     text = "Use arrow keys to select, Enter to boot"
     font = "Unifont Regular 12"
 }
