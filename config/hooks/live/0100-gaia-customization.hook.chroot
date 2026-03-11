@@ -87,7 +87,7 @@ Theme=breeze-dark
 [KDE]
 LookAndFeelPackage=org.kde.breezedark.desktop
 SingleClick=false
-AnimationDurationFactor=0.25
+AnimationDurationFactor=0.5
 EOF
 
 # Plasma accent color (purple)
@@ -120,26 +120,31 @@ MaxFPS=60
 OpenGLIsUnsafe=false
 VBlankTime=6000
 WindowsBlockCompositing=true
-AnimationSpeed=1
+AnimationSpeed=2
 
 [Plugins]
 blurEnabled=false
 contrastEnabled=false
 slideEnabled=false
-fadeEnabled=false
+fadeEnabled=true
 loginEnabled=false
 logoutEnabled=false
 maximizeEnabled=false
 squashEnabled=false
 translucencyEnabled=false
 kwin4_effect_scaleEnabled=false
-kwin4_effect_fadingpopupsEnabled=false
-kwin4_effect_morphingpopupsEnabled=false
+kwin4_effect_fadingpopupsEnabled=true
+kwin4_effect_morphingpopupsEnabled=true
 kwin4_effect_dimscreenEnabled=false
 kwin4_effect_fullscreenEnabled=false
 kwin4_effect_dialogparentEnabled=false
 overviewEnabled=false
 screenedgeEnabled=false
+desktopgridEnabled=false
+highlightwindowEnabled=false
+kwin4_effect_windowapertureEnabled=false
+shakecursorEnabled=false
+tileseditorEnabled=false
 
 [org.kde.kdecoration2]
 BorderSize=None
@@ -161,6 +166,7 @@ Indexing-Enabled=false
 EOF
 
 # Wallpaper for Plasma desktop
+# Write a plasmashellrc default to force wallpaper on first launch
 cat > /etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc << 'EOF'
 [Containments][1]
 activityId=
@@ -176,6 +182,23 @@ Image=file:///usr/share/backgrounds/gaia/wallpaper.png
 FillMode=2
 SlidePaths=
 EOF
+
+# Also set Plasma default wallpaper via plasmashellrc
+cat > /etc/skel/.config/plasmashellrc << 'EOF'
+[Wallpapers][org.kde.image][General]
+Image=file:///usr/share/backgrounds/gaia/wallpaper.png
+FillMode=2
+EOF
+
+# Override the Plasma Breeze default wallpaper package
+mkdir -p /usr/share/wallpapers/Next/contents/images
+cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Next/contents/images/3840x2160.png 2>/dev/null || true
+cp /usr/share/backgrounds/gaia/wallpaper.png /usr/share/wallpapers/Next/contents/images/1920x1080.png 2>/dev/null || true
+# Also override the "default" symlink if it points to Next
+if [ -L /usr/share/wallpapers/default ] || [ ! -e /usr/share/wallpapers/default ]; then
+    rm -f /usr/share/wallpapers/default
+    ln -s /usr/share/wallpapers/Gaia /usr/share/wallpapers/default
+fi
 
 # Ensure Plasma uses our wallpaper as default for all activities
 mkdir -p /etc/skel/.config
@@ -343,6 +366,7 @@ cat > /etc/systemd/system.conf.d/gaia-performance.conf << 'EOF'
 [Manager]
 DefaultTimeoutStartSec=10s
 DefaultTimeoutStopSec=10s
+DefaultDeviceTimeoutSec=10s
 EOF
 
 # Faster shutdown
@@ -356,6 +380,70 @@ EOF
 systemctl disable apt-daily.timer 2>/dev/null || true
 systemctl disable apt-daily-upgrade.timer 2>/dev/null || true
 systemctl disable ModemManager.service 2>/dev/null || true
+systemctl disable avahi-daemon.service 2>/dev/null || true
+systemctl disable cups.service 2>/dev/null || true
+systemctl disable cups-browsed.service 2>/dev/null || true
+
+# --- Kernel Performance Tuning (sysctl) ---
+cat > /etc/sysctl.d/99-gaia-performance.conf << 'EOF'
+# Reduce swap usage (prefer RAM)
+vm.swappiness=10
+# Faster dirty page writeback
+vm.dirty_ratio=10
+vm.dirty_background_ratio=5
+# Reduce inode/dentry cache pressure
+vm.vfs_cache_pressure=50
+# Disable magic SysRq (security + minor perf)
+kernel.sysrq=0
+EOF
+
+# --- zRAM for compressed swap (huge perf boost on low-RAM systems) ---
+cat > /usr/local/bin/gaia-zram-start.sh << 'ZRAMEOF'
+#!/bin/bash
+modprobe zram
+MEMTOTAL=$(awk '/MemTotal/{print int($2/2)}' /proc/meminfo)
+echo "${MEMTOTAL}K" > /sys/block/zram0/disksize
+mkswap /dev/zram0
+swapon -p 100 /dev/zram0
+ZRAMEOF
+chmod +x /usr/local/bin/gaia-zram-start.sh
+
+cat > /usr/local/bin/gaia-zram-stop.sh << 'ZRAMEOF'
+#!/bin/bash
+swapoff /dev/zram0 2>/dev/null
+echo 1 > /sys/block/zram0/reset 2>/dev/null
+ZRAMEOF
+chmod +x /usr/local/bin/gaia-zram-stop.sh
+
+cat > /etc/systemd/system/zram-swap.service << 'EOF'
+[Unit]
+Description=Configure zRAM swap
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/gaia-zram-start.sh
+ExecStop=/usr/local/bin/gaia-zram-stop.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl enable zram-swap.service 2>/dev/null || true
+
+# --- I/O Scheduler: use mq-deadline for SSDs, bfq for HDDs ---
+cat > /etc/udev/rules.d/60-gaia-ioscheduler.rules << 'EOF'
+# SSD / NVMe: low-latency scheduler
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
+# HDD: fair queuing
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+EOF
+
+# --- tmpfs for /tmp (RAM-backed = faster) ---
+if ! grep -q '/tmp' /etc/fstab 2>/dev/null; then
+    echo "tmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,size=512M 0 0" >> /etc/fstab
+fi
 
 # --- Apply configs to live user at first login ---
 # live-config creates user "user" at boot but doesn't always copy all skel dotfiles
@@ -385,7 +473,14 @@ if [ "$IS_VM" = true ]; then
 
     # Reduce desktop effects to zero
     kwriteconfig6 --file kdeglobals --group KDE --key AnimationDurationFactor 0 2>/dev/null || true
+
+    # Force X11 rendering backend in VMs (more stable than Wayland in VMs)
+    kwriteconfig6 --file kwinrc --group Compositing --key Backend XRender 2>/dev/null || true
 fi
+
+# Kill Baloo if it somehow started
+balooctl6 disable 2>/dev/null || balooctl disable 2>/dev/null || true
+killall baloo_file 2>/dev/null || true
 
 # Force wallpaper and theme via Plasma CLI tools
 if command -v plasma-apply-wallpaperimage &> /dev/null; then

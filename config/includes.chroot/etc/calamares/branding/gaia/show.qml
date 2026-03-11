@@ -37,7 +37,7 @@ Presentation {
                 }
 
                 Text {
-                    text: "A clean, beautiful Debian-based distribution."
+                    text: "A clean, fast, and beautiful Linux distribution."
                     font.pixelSize: 16
                     color: "#c4b5fd"
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -64,7 +64,7 @@ Presentation {
                 }
 
                 Text {
-                    text: "• XFCE desktop with a macOS-inspired layout\n• Arc Dark theme with purple accents\n• Alacritty terminal, Firefox, Thunar\n• Powered by Debian Stable"
+                    text: "• KDE Plasma 6 desktop with dark theme\n• Purple accent colors and Breeze icons\n• Alacritty terminal, Firefox, Dolphin\n• Optimized for speed and simplicity"
                     font.pixelSize: 15
                     color: "#c4b5fd"
                     lineHeight: 1.5

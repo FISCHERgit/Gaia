@@ -17,7 +17,7 @@ if [ -d "/lib/modules/$KERNEL_VER" ] && [ ! -e "/lib/modules/$GAIA_KERNEL" ]; th
     ln -s "$KERNEL_VER" "/lib/modules/$GAIA_KERNEL"
 fi
 
-# uname wrapper
+# uname wrapper — intercepts uname calls to show Gaia branding
 cat > /usr/local/bin/uname << UNAMEEOF
 #!/bin/bash
 /usr/bin/uname "\$@" | sed 's/$KERNEL_VER/$GAIA_KERNEL/g; s/Debian/Gaia Linux/g'
@@ -33,5 +33,107 @@ DISTRIB_RELEASE=2.0
 DISTRIB_CODENAME=trixie
 DISTRIB_DESCRIPTION="Gaia Linux 2.0"
 EOF
+
+# --- Fastfetch / Neofetch branding ---
+# These tools read /etc/os-release (already set in 0100 hook) and
+# /proc/version. We can't change /proc/version at build time, but
+# we can configure fastfetch to show the right info.
+mkdir -p /etc/skel/.config/fastfetch
+cat > /etc/skel/.config/fastfetch/config.jsonc << 'FFEOF'
+{
+    "logo": {
+        "type": "builtin",
+        "source": "linux"
+    },
+    "modules": [
+        {
+            "type": "os",
+            "key": "OS"
+        },
+        {
+            "type": "host",
+            "key": "Host"
+        },
+        {
+            "type": "kernel",
+            "key": "Kernel",
+            "format": "{1}-gaia"
+        },
+        {
+            "type": "uptime",
+            "key": "Uptime"
+        },
+        {
+            "type": "packages",
+            "key": "Packages"
+        },
+        {
+            "type": "shell",
+            "key": "Shell"
+        },
+        {
+            "type": "de",
+            "key": "DE"
+        },
+        {
+            "type": "wm",
+            "key": "WM"
+        },
+        {
+            "type": "terminal",
+            "key": "Terminal"
+        },
+        {
+            "type": "cpu",
+            "key": "CPU"
+        },
+        {
+            "type": "gpu",
+            "key": "GPU"
+        },
+        {
+            "type": "memory",
+            "key": "Memory"
+        },
+        {
+            "type": "disk",
+            "key": "Disk"
+        }
+    ]
+}
+FFEOF
+
+# Also create a system-wide fastfetch config
+mkdir -p /etc/fastfetch
+cp /etc/skel/.config/fastfetch/config.jsonc /etc/fastfetch/config.jsonc
+
+# /proc/version override: create a script that patches /proc/version display
+# by mounting a bind-mount at boot (the only way to change /proc/version)
+cat > /usr/local/bin/gaia-proc-version.sh << 'PROCEOF'
+#!/bin/bash
+# Override /proc/version to show Gaia Linux branding
+REAL_VERSION=$(cat /proc/version)
+GAIA_VERSION=$(echo "$REAL_VERSION" | sed 's/Debian/Gaia Linux/g')
+echo "$GAIA_VERSION" > /run/gaia-version
+mount --bind /run/gaia-version /proc/version 2>/dev/null || true
+PROCEOF
+chmod +x /usr/local/bin/gaia-proc-version.sh
+
+# Systemd service to apply /proc/version branding at boot
+cat > /etc/systemd/system/gaia-branding.service << 'EOF'
+[Unit]
+Description=Gaia Linux Kernel Branding
+After=local-fs.target
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/gaia-proc-version.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl enable gaia-branding.service 2>/dev/null || true
 
 echo "=== Kernel branding complete ==="

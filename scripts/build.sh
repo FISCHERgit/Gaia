@@ -4,10 +4,12 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build"
+NPROC=$(nproc 2>/dev/null || echo 2)
 
 echo "=== Gaia Linux Build ==="
 echo "Project: $PROJECT_DIR"
 echo "Build:   $BUILD_DIR"
+echo "CPUs:    $NPROC"
 echo ""
 
 # Check if running as root
@@ -24,6 +26,33 @@ for cmd in lb debootstrap; do
     fi
 done
 
+# --- VM Build Performance: use tmpfs or RAM-backed build if enough RAM ---
+MEMTOTAL_MB=$(awk '/MemTotal/{print int($2/1024)}' /proc/meminfo 2>/dev/null || echo 0)
+if [ "$MEMTOTAL_MB" -gt 8000 ] && [ ! -d "$BUILD_DIR/chroot" ]; then
+    # If >8GB RAM and fresh build, offer tmpfs-backed build dir for speed
+    if mountpoint -q "$BUILD_DIR" 2>/dev/null; then
+        echo "Build dir already mounted (tmpfs or other)"
+    elif [ "${GAIA_TMPFS_BUILD:-0}" = "1" ]; then
+        echo "=== Using tmpfs for build (GAIA_TMPFS_BUILD=1) ==="
+        mkdir -p "$BUILD_DIR"
+        mount -t tmpfs -o size=6G tmpfs "$BUILD_DIR"
+        echo "  Mounted 6G tmpfs on $BUILD_DIR — builds will be much faster"
+    fi
+fi
+
+# --- Use apt-cacher-ng if available (huge speedup on repeated builds) ---
+APT_PROXY=""
+if curl -s --connect-timeout 1 http://127.0.0.1:3142 &>/dev/null; then
+    APT_PROXY="http://127.0.0.1:3142"
+    echo "=== apt-cacher-ng detected at $APT_PROXY ==="
+elif curl -s --connect-timeout 1 http://192.168.1.1:3142 &>/dev/null; then
+    APT_PROXY="http://192.168.1.1:3142"
+    echo "=== apt-cacher-ng detected at $APT_PROXY ==="
+fi
+
+# Use a fast mirror (auto-detect or use German mirror for EU)
+MIRROR="${GAIA_MIRROR:-http://deb.debian.org/debian}"
+
 # Generate installer assets
 echo "=== Generating installer banner ==="
 bash "$SCRIPT_DIR/generate-installer-banner.sh"
@@ -37,6 +66,9 @@ cd "$BUILD_DIR"
 # Initialize live-build config
 # NOTE: --debian-installer live = real Debian installer using the live filesystem
 # Calamares remains in live session as alternative
+APT_PROXY_OPTS=""
+[ -n "$APT_PROXY" ] && APT_PROXY_OPTS="--apt-http-proxy $APT_PROXY"
+
 lb config \
     --distribution trixie \
     --archive-areas "main contrib non-free non-free-firmware" \
@@ -50,6 +82,11 @@ lb config \
     --cache-packages true \
     --cache-stages "bootstrap rootfs" \
     --apt-indices false \
+    --apt-recommends false \
+    --mirror-bootstrap "$MIRROR" \
+    --mirror-chroot "$MIRROR" \
+    --mirror-chroot-security "http://security.debian.org/debian-security" \
+    $APT_PROXY_OPTS \
     --iso-application "Gaia Linux" \
     --iso-publisher "Gaia Project" \
     --iso-volume "GaiaLinux"
@@ -117,11 +154,42 @@ for f in \
     fi
 done
 
+# --- Speed up mksquashfs compression (biggest time sink) ---
+# Use all available CPU cores and faster compression
+export MKSQUASHFS_OPTIONS="-processors $NPROC -comp xz -Xbcj x86 -b 1M"
+
+# Speed up dpkg during build (force-unsafe-io skips fsync = much faster installs)
+mkdir -p "$BUILD_DIR/config/includes.chroot/etc/dpkg/dpkg.cfg.d"
+echo 'force-unsafe-io' > "$BUILD_DIR/config/includes.chroot/etc/dpkg/dpkg.cfg.d/force-unsafe-io"
+
+# Cleanup hook: remove build-time speedups from final image
+cat > "$BUILD_DIR/config/hooks/live/9999-cleanup.hook.chroot" << 'EOF'
+#!/bin/bash
+# Remove build-time dpkg speedup from final image
+rm -f /etc/dpkg/dpkg.cfg.d/force-unsafe-io
+# Clean apt caches to reduce image size
+apt-get clean
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+EOF
+chmod +x "$BUILD_DIR/config/hooks/live/9999-cleanup.hook.chroot"
+
 # Build
 echo ""
-echo "=== Starting build... ==="
+echo "=== Starting build (using $NPROC CPU cores)... ==="
+TIME_START=$(date +%s)
+
 lb build
 
+TIME_END=$(date +%s)
+TIME_DIFF=$((TIME_END - TIME_START))
+MINUTES=$((TIME_DIFF / 60))
+SECONDS=$((TIME_DIFF % 60))
+
 echo ""
-echo "=== Build complete ==="
+echo "=== Build complete in ${MINUTES}m ${SECONDS}s ==="
 echo "ISO: $(find "$BUILD_DIR" -maxdepth 1 -name '*.iso' -type f)"
+ISO_FILE=$(find "$BUILD_DIR" -maxdepth 1 -name '*.iso' -type f | head -1)
+if [ -n "$ISO_FILE" ]; then
+    ISO_SIZE=$(du -h "$ISO_FILE" | cut -f1)
+    echo "Size: $ISO_SIZE"
+fi

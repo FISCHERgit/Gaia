@@ -69,7 +69,6 @@ git
 curl
 wget
 nano
-vim
 
 # Fonts
 fonts-noto
