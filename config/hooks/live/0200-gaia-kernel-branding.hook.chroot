@@ -136,4 +136,21 @@ WantedBy=multi-user.target
 EOF
 systemctl enable gaia-branding.service 2>/dev/null || true
 
+# --- GRUB Branding (after installation) ---
+# Override GRUB distributor so update-grub shows "Gaia Linux" instead of "Debian"
+cat > /etc/default/grub.d/gaia-branding.cfg << 'EOF'
+GRUB_DISTRIBUTOR="Gaia Linux"
+EOF
+
+# Also patch /etc/default/grub if GRUB_DISTRIBUTOR is set there
+if [ -f /etc/default/grub ]; then
+    sed -i 's/GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="Gaia Linux"/' /etc/default/grub
+fi
+
+# Override os-prober and grub-mkconfig scripts to use "Gaia Linux"
+# The 10_linux script in grub reads GRUB_DISTRIBUTOR
+if [ -f /etc/grub.d/10_linux ]; then
+    sed -i 's/Debian GNU\/Linux/Gaia Linux/g' /etc/grub.d/10_linux 2>/dev/null || true
+fi
+
 echo "=== Kernel branding complete ==="
