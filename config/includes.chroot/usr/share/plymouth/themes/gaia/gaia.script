@@ -1,44 +1,70 @@
-// Gaia Linux Plymouth Boot Script
+// Gaia Linux Plymouth Boot Script — Breathing Logo Animation
 
-// Background
+// Background: dark purple gradient
 Window.SetBackgroundTopColor(0.12, 0.11, 0.18);
 Window.SetBackgroundBottomColor(0.07, 0.06, 0.12);
 
-// Logo
-logo.image = Image("logo.png");
-logo.sprite = Sprite(logo.image.Scale(128, 128));
-logo.sprite.SetX(Window.GetWidth() / 2 - 64);
-logo.sprite.SetY(Window.GetHeight() / 2 - 100);
+// Load logo image
+logo_original = Image("logo.png");
+
+// Base size and breathing range
+base_width = 256;
+base_height = Math.Int(base_width * logo_original.GetHeight() / logo_original.GetWidth());
+breath_range = 20;  // pixels to grow/shrink
+
+// Create initial sprite
+logo.sprite = Sprite(logo_original.Scale(base_width, base_height));
+logo.sprite.SetX(Window.GetWidth() / 2 - base_width / 2);
+logo.sprite.SetY(Window.GetHeight() / 2 - base_height / 2 - 40);
 logo.sprite.SetOpacity(1);
 
-// Pulsing animation
+// "LINUX" text below logo (subtle)
+// We'll use a small dot as progress indicator instead
+
+// Breathing animation counter
 progress = 0;
 
 fun refresh_callback() {
     progress++;
-    opacity = Math.Abs(Math.Sin(progress * 0.03)) * 0.4 + 0.6;
+
+    // Smooth sine wave for breathing effect (slow, ~3 second cycle)
+    breath = Math.Sin(progress * 0.035) * breath_range;
+
+    // Calculate current size
+    cur_width = base_width + Math.Int(breath);
+    cur_height = Math.Int(cur_width * logo_original.GetHeight() / logo_original.GetWidth());
+
+    // Rescale and reposition (keep centered)
+    logo.sprite.SetImage(logo_original.Scale(cur_width, cur_height));
+    logo.sprite.SetX(Window.GetWidth() / 2 - cur_width / 2);
+    logo.sprite.SetY(Window.GetHeight() / 2 - cur_height / 2 - 40);
+
+    // Subtle opacity pulse synced with breathing (0.85 - 1.0)
+    opacity = 0.85 + Math.Abs(Math.Sin(progress * 0.035)) * 0.15;
     logo.sprite.SetOpacity(opacity);
 }
 
 Plymouth.SetRefreshFunction(refresh_callback);
 
-// Progress bar
-bar.image = Image("logo.png").Scale(4, 4);
-bar.sprites = [];
+// --- Progress bar: thin elegant line ---
+progress_box.image = Image("logo.png").Scale(1, 3);
+progress_box.sprite = Sprite(progress_box.image);
+progress_box.sprite.SetOpacity(0);
+
+progress_bar.original = Image("logo.png");
 
 fun progress_callback(duration, progress_val) {
-    bar_width = Window.GetWidth() * 0.3;
+    bar_width = Window.GetWidth() * 0.25;
     bar_x = Window.GetWidth() / 2 - bar_width / 2;
-    bar_y = Window.GetHeight() / 2 + 80;
+    bar_y = Window.GetHeight() / 2 + base_height / 2 + 20;
 
-    count = Math.Int(progress_val * 20);
-    for (i = 0; i < count; i++) {
-        if (!bar.sprites[i]) {
-            bar.sprites[i] = Sprite(Image("logo.png").Scale(8, 8));
-        }
-        bar.sprites[i].SetX(bar_x + i * (bar_width / 20));
-        bar.sprites[i].SetY(bar_y);
-        bar.sprites[i].SetOpacity(0.8);
+    // Draw filled portion
+    filled_width = Math.Int(progress_val * bar_width);
+    if (filled_width > 1) {
+        progress_box.sprite.SetImage(progress_bar.original.Scale(filled_width, 3));
+        progress_box.sprite.SetX(bar_x);
+        progress_box.sprite.SetY(bar_y);
+        progress_box.sprite.SetOpacity(0.6);
     }
 }
 
