@@ -1,166 +1,168 @@
 # Gaia Linux - Debian Installer GTK2 Theme
-# Clean cream/green theme matching Gaia branding
+# Modern dark theme with lime green accents
 
-gtk-font-name = "Noto Sans 10"
+gtk-font-name = "Noto Sans 11"
 gtk-icon-sizes = "gtk-menu=16,16:gtk-button=16,16:gtk-dialog=48,48"
 
 # ── Main Window ──────────────────────────────────────────────
 
 style "gaia-default" {
-    GtkWidget::focus-line-width = 1
-    GtkWidget::focus-padding = 1
+    GtkWidget::focus-line-width = 0
+    GtkWidget::focus-padding = 2
     GtkButton::default-border = { 0, 0, 0, 0 }
     GtkButton::child-displacement-x = 0
-    GtkButton::child-displacement-y = 1
-    GtkScrollbar::slider-width = 12
-    GtkScrollbar::min-slider-length = 36
+    GtkButton::child-displacement-y = 0
+    GtkScrollbar::slider-width = 8
+    GtkScrollbar::min-slider-length = 40
+    GtkScrollbar::has-backward-stepper = 0
+    GtkScrollbar::has-forward-stepper = 0
     GtkRange::trough-border = 0
     GtkRange::stepper-size = 0
-    GtkPaned::handle-size = 6
+    GtkPaned::handle-size = 4
     GtkMenuBar::internal-padding = 0
     GtkTreeView::expander-size = 14
     GtkTreeView::indent-expanders = TRUE
     GtkExpander::expander-size = 14
-    GtkNotebook::tab-curvature = 3
-    GtkNotebook::tab-overlap = 1
+    GtkNotebook::tab-curvature = 0
+    GtkNotebook::tab-overlap = 0
 
-    # Main background: warm cream
-    bg[NORMAL]        = "#f5f5eb"
-    bg[PRELIGHT]      = "#eeeee0"
-    bg[ACTIVE]        = "#e8e8d8"
+    # Dark background
+    bg[NORMAL]        = "#1e1e1e"
+    bg[PRELIGHT]      = "#2a2a2a"
+    bg[ACTIVE]        = "#333333"
     bg[SELECTED]      = "#c4d600"
-    bg[INSENSITIVE]   = "#f0f0e6"
+    bg[INSENSITIVE]   = "#1a1a1a"
 
-    # Foreground: dark charcoal
-    fg[NORMAL]        = "#2a2a2a"
-    fg[PRELIGHT]      = "#1a1a1a"
-    fg[ACTIVE]        = "#1a1a1a"
-    fg[SELECTED]      = "#ffffff"
-    fg[INSENSITIVE]   = "#999990"
+    # Light foreground
+    fg[NORMAL]        = "#e0e0e0"
+    fg[PRELIGHT]      = "#ffffff"
+    fg[ACTIVE]        = "#ffffff"
+    fg[SELECTED]      = "#1a1a1a"
+    fg[INSENSITIVE]   = "#666666"
 
     # Text
-    text[NORMAL]      = "#2a2a2a"
-    text[PRELIGHT]    = "#1a1a1a"
-    text[ACTIVE]      = "#ffffff"
-    text[SELECTED]    = "#ffffff"
-    text[INSENSITIVE] = "#999990"
+    text[NORMAL]      = "#e0e0e0"
+    text[PRELIGHT]    = "#ffffff"
+    text[ACTIVE]      = "#1a1a1a"
+    text[SELECTED]    = "#1a1a1a"
+    text[INSENSITIVE] = "#666666"
 
-    # Input backgrounds: white
-    base[NORMAL]      = "#ffffff"
-    base[PRELIGHT]    = "#fafaf4"
+    # Input backgrounds
+    base[NORMAL]      = "#2a2a2a"
+    base[PRELIGHT]    = "#333333"
     base[ACTIVE]      = "#c4d600"
     base[SELECTED]    = "#c4d600"
-    base[INSENSITIVE] = "#f0f0e6"
+    base[INSENSITIVE] = "#1e1e1e"
 
     engine "clearlooks" {
         colorize_scrollbar = TRUE
         menubarstyle = 0
-        toolbarstyle = 1
+        toolbarstyle = 0
         animation = FALSE
         style = GUMMY
-        radius = 4.0
+        radius = 6.0
     }
 }
 
 # ── Buttons ──────────────────────────────────────────────────
 
 style "gaia-button" = "gaia-default" {
-    xthickness = 4
-    ythickness = 4
+    xthickness = 6
+    ythickness = 6
 
-    bg[NORMAL]   = "#e8e8d8"
-    bg[PRELIGHT] = "#ddddc8"
-    bg[ACTIVE]   = "#d0d0b8"
+    bg[NORMAL]   = "#333333"
+    bg[PRELIGHT] = "#3d3d3d"
+    bg[ACTIVE]   = "#c4d600"
     bg[SELECTED] = "#c4d600"
 
-    fg[NORMAL]   = "#2a2a2a"
-    fg[PRELIGHT] = "#1a1a1a"
+    fg[NORMAL]   = "#e0e0e0"
+    fg[PRELIGHT] = "#ffffff"
     fg[ACTIVE]   = "#1a1a1a"
-
-    engine "clearlooks" {
-        radius = 4.0
-    }
-}
-
-# ── Notebook (Tabs) ──────────────────────────────────────────
-
-style "gaia-notebook" = "gaia-default" {
-    xthickness = 2
-    ythickness = 2
-
-    bg[NORMAL]   = "#f0f0e4"
-    bg[ACTIVE]   = "#e8e8d8"
-    bg[SELECTED] = "#c4d600"
-}
-
-# ── Menu Bar ─────────────────────────────────────────────────
-
-style "gaia-menubar" = "gaia-default" {
-    bg[NORMAL]   = "#eaeadc"
-    fg[NORMAL]   = "#404038"
-    fg[PRELIGHT] = "#1a1a1a"
-}
-
-style "gaia-menuitem" = "gaia-default" {
-    xthickness = 3
-    ythickness = 3
-
-    bg[PRELIGHT] = "#c4d600"
-    fg[PRELIGHT] = "#ffffff"
-}
-
-# ── Progress Bar ─────────────────────────────────────────────
-
-style "gaia-progressbar" = "gaia-default" {
-    xthickness = 1
-    ythickness = 1
-
-    bg[NORMAL]   = "#e0e0d0"
-    bg[SELECTED] = "#c4d600"
-    fg[PRELIGHT] = "#ffffff"
-
-    engine "clearlooks" {
-        radius = 3.0
-    }
-}
-
-# ── Text Entry / Input ───────────────────────────────────────
-
-style "gaia-entry" = "gaia-default" {
-    xthickness = 4
-    ythickness = 4
-
-    base[NORMAL]   = "#ffffff"
-    base[ACTIVE]   = "#c4d600"
-    base[SELECTED] = "#c4d600"
-    text[NORMAL]   = "#2a2a2a"
-    text[SELECTED] = "#ffffff"
-
-    engine "clearlooks" {
-        radius = 3.0
-    }
-}
-
-# ── Scrollbar ────────────────────────────────────────────────
-
-style "gaia-scrollbar" = "gaia-default" {
-    bg[NORMAL]   = "#d8d8c8"
-    bg[PRELIGHT] = "#c8c8b0"
-    bg[ACTIVE]   = "#b8b8a0"
 
     engine "clearlooks" {
         radius = 6.0
     }
 }
 
+# ── Notebook (Tabs) ──────────────────────────────────────────
+
+style "gaia-notebook" = "gaia-default" {
+    xthickness = 4
+    ythickness = 4
+
+    bg[NORMAL]   = "#252525"
+    bg[ACTIVE]   = "#1e1e1e"
+    bg[SELECTED] = "#c4d600"
+}
+
+# ── Menu Bar ─────────────────────────────────────────────────
+
+style "gaia-menubar" = "gaia-default" {
+    bg[NORMAL]   = "#1a1a1a"
+    fg[NORMAL]   = "#b0b0b0"
+    fg[PRELIGHT] = "#ffffff"
+}
+
+style "gaia-menuitem" = "gaia-default" {
+    xthickness = 4
+    ythickness = 4
+
+    bg[PRELIGHT] = "#c4d600"
+    fg[PRELIGHT] = "#1a1a1a"
+}
+
+# ── Progress Bar ─────────────────────────────────────────────
+
+style "gaia-progressbar" = "gaia-default" {
+    xthickness = 0
+    ythickness = 0
+
+    bg[NORMAL]   = "#333333"
+    bg[SELECTED] = "#c4d600"
+    fg[PRELIGHT] = "#1a1a1a"
+
+    engine "clearlooks" {
+        radius = 6.0
+    }
+}
+
+# ── Text Entry / Input ───────────────────────────────────────
+
+style "gaia-entry" = "gaia-default" {
+    xthickness = 6
+    ythickness = 6
+
+    base[NORMAL]   = "#2a2a2a"
+    base[ACTIVE]   = "#c4d600"
+    base[SELECTED] = "#c4d600"
+    text[NORMAL]   = "#e0e0e0"
+    text[SELECTED] = "#1a1a1a"
+
+    engine "clearlooks" {
+        radius = 6.0
+    }
+}
+
+# ── Scrollbar ────────────────────────────────────────────────
+
+style "gaia-scrollbar" = "gaia-default" {
+    bg[NORMAL]   = "#404040"
+    bg[PRELIGHT] = "#505050"
+    bg[ACTIVE]   = "#c4d600"
+
+    engine "clearlooks" {
+        radius = 8.0
+    }
+}
+
 # ── Tooltip ──────────────────────────────────────────────────
 
 style "gaia-tooltip" = "gaia-default" {
-    xthickness = 6
-    ythickness = 4
+    xthickness = 8
+    ythickness = 6
 
-    bg[NORMAL] = "#404038"
-    fg[NORMAL] = "#f5f5eb"
+    bg[NORMAL] = "#333333"
+    fg[NORMAL] = "#e0e0e0"
 }
 
 # ── Frame / Label ────────────────────────────────────────────
@@ -173,19 +175,19 @@ style "gaia-frame" = "gaia-default" {
 # ── Tree / List View ────────────────────────────────────────
 
 style "gaia-treeview" = "gaia-default" {
-    base[NORMAL]   = "#ffffff"
+    base[NORMAL]   = "#252525"
     base[SELECTED] = "#c4d600"
     base[ACTIVE]   = "#d4e500"
-    text[NORMAL]   = "#2a2a2a"
-    text[SELECTED] = "#ffffff"
-    text[ACTIVE]   = "#ffffff"
+    text[NORMAL]   = "#e0e0e0"
+    text[SELECTED] = "#1a1a1a"
+    text[ACTIVE]   = "#1a1a1a"
 }
 
 style "gaia-treeview-header" = "gaia-default" {
-    bg[NORMAL]   = "#eaeadc"
-    bg[PRELIGHT] = "#e0e0d0"
-    fg[NORMAL]   = "#505048"
-    fg[PRELIGHT] = "#2a2a2a"
+    bg[NORMAL]   = "#1e1e1e"
+    bg[PRELIGHT] = "#2a2a2a"
+    fg[NORMAL]   = "#909090"
+    fg[PRELIGHT] = "#e0e0e0"
 }
 
 # ── Apply Styles ─────────────────────────────────────────────

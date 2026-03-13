@@ -16,9 +16,9 @@ if [ -f "$WALLPAPER" ]; then
     cp "$WALLPAPER" "$OUTPUT"
     echo "Installer wallpaper: copied from Gaia wallpaper"
 elif command -v convert &> /dev/null; then
-    # Fallback: generate cream/green radial gradient
+    # Fallback: generate dark radial gradient with subtle green center
     convert -size 1920x1080 \
-        radial-gradient:"#c4d600"-"#f5f5eb" \
+        radial-gradient:"#2a2e1a"-"#1a1a1a" \
         "$OUTPUT"
     echo "Installer wallpaper: generated gradient"
 elif command -v python3 &> /dev/null; then
@@ -30,9 +30,9 @@ width, height = 640, 360
 cx, cy = width / 2, height / 2
 max_dist = math.sqrt(cx * cx + cy * cy)
 
-# Center: yellow-green (#c4d600), edges: cream (#f5f5eb)
-cr, cg, cb = 0xc4, 0xd6, 0x00
-er, eg, eb = 0xf5, 0xf5, 0xeb
+# Center: dark olive (#2a2e1a), edges: near-black (#1a1a1a)
+cr, cg, cb = 0x2a, 0x2e, 0x1a
+er, eg, eb = 0x1a, 0x1a, 0x1a
 
 raw = bytearray()
 for y in range(height):

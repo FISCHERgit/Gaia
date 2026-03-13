@@ -13,16 +13,11 @@ OUTPUT="$PROJECT_DIR/config/includes.installer/usr/share/graphics/logo_debian.pn
 mkdir -p "$(dirname "$OUTPUT")"
 
 if command -v convert &> /dev/null; then
-    # Create a clean banner with warm cream background, logo, and text
-    convert -size 800x75 \
-        \( xc:"#f5f5eb" xc:"#eeeee0" +append -resize 800x75\! \) \
-        \( "$LOGO" -resize x45 -gravity center \) \
-        -gravity West -geometry +20+0 -composite \
-        -font "Noto-Sans-Bold" -pointsize 26 -fill "#2a2a2a" \
-        -gravity West -annotate +85+0 "Gaia Linux" \
-        -font "Noto-Sans" -pointsize 13 -fill "#707060" \
-        -gravity West -annotate +85+22 "Installation" \
-        \( -size 800x2 xc:"#c4d600" \) -gravity South -composite \
+    # Create a minimal banner with logo on the far left, no text
+    convert -size 800x75 xc:"#1e1e1e" \
+        \( "$LOGO" -resize x55 -gravity center \) \
+        -gravity West -geometry +10+0 -composite \
+        \( -size 800x1 xc:"#c4d600" \) -gravity South -composite \
         "$OUTPUT"
 elif command -v python3 &> /dev/null; then
     echo "Warning: ImageMagick not found. Creating gradient banner with Python3."
@@ -32,19 +27,16 @@ import struct, zlib, sys
 output_path = sys.argv[1]
 width, height = 800, 75
 
-# Gradient from #f5f5eb to #eeeee0 with green accent line at bottom
+# Dark background with thin green accent line at bottom
 raw = b''
 for y in range(height):
     raw += b'\x00'
     for x in range(width):
-        t = x / width
-        if y >= height - 2:
+        if y >= height - 1:
             # Green accent line at bottom
             r, g, b = 0xc4, 0xd6, 0x00
         else:
-            r = int(0xf5 + (0xee - 0xf5) * t)
-            g = int(0xf5 + (0xee - 0xf5) * t)
-            b = int(0xeb + (0xe0 - 0xeb) * t)
+            r, g, b = 0x1e, 0x1e, 0x1e
         raw += bytes([r, g, b])
 
 def chunk(ctype, data):
