@@ -69,13 +69,13 @@ Presentation {
                     text: "Built for Speed"
                     font.pixelSize: 28
                     font.weight: Font.DemiBold
-                    color: "#b8d400"
+                    color: "#c4d600"
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Rectangle {
                     width: 60; height: 2
-                    color: "#b8d400"
+                    color: "#c4d600"
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -105,13 +105,13 @@ Presentation {
                     text: "Your Desktop"
                     font.pixelSize: 28
                     font.weight: Font.DemiBold
-                    color: "#b8d400"
+                    color: "#c4d600"
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Rectangle {
                     width: 60; height: 2
-                    color: "#b8d400"
+                    color: "#c4d600"
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 

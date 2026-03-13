@@ -13,39 +13,39 @@ style = "Regular"
 [font.bold]
 style = "Bold"
 
-# Gaia Purple Dark Theme
+# Gaia Lime Green Dark Theme
 [colors.primary]
-background = "#1a1a2e"
-foreground = "#e2e2e8"
+background = "#1a1c12"
+foreground = "#e8e4d8"
 
 [colors.cursor]
-text = "#1a1a2e"
-cursor = "#a78bfa"
+text = "#1a1c12"
+cursor = "#d4e500"
 
 [colors.vi_mode_cursor]
-text = "#1a1a2e"
-cursor = "#c4b5fd"
+text = "#1a1c12"
+cursor = "#c8c4b0"
 
 [colors.selection]
-text = "#e2e2e8"
-background = "#3b3363"
+text = "#e8e4d8"
+background = "#3b3d28"
 
 [colors.normal]
-black   = "#1a1a2e"
+black   = "#1a1c12"
 red     = "#f87171"
-green   = "#4ade80"
+green   = "#c4d600"
 yellow  = "#fbbf24"
-blue    = "#7c3aed"
-magenta = "#a78bfa"
+blue    = "#6b9e1a"
+magenta = "#d4e500"
 cyan    = "#22d3ee"
-white   = "#e2e2e8"
+white   = "#e8e4d8"
 
 [colors.bright]
-black   = "#2d2b55"
+black   = "#2d2e1e"
 red     = "#fca5a5"
-green   = "#86efac"
+green   = "#d4e500"
 yellow  = "#fcd34d"
-blue    = "#8b5cf6"
-magenta = "#c4b5fd"
+blue    = "#a8b800"
+magenta = "#c8c4b0"
 cyan    = "#67e8f9"
 white   = "#ffffff"

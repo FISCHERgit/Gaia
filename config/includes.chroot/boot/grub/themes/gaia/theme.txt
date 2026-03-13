@@ -34,7 +34,7 @@ terminal-font: "Unifont Regular 16"
     top = 92%
     width = 100%
     align = "center"
-    color = "#707060"
+    color = "#c4d600"
     text = "Gaia Linux"
     font = "Unifont Regular 14"
 }
@@ -44,7 +44,7 @@ terminal-font: "Unifont Regular 16"
     top = 96%
     width = 100%
     align = "center"
-    color = "#909080"
+    color = "#9aaa00"
     text = "Use arrow keys to select, Enter to boot"
     font = "Unifont Regular 12"
 }

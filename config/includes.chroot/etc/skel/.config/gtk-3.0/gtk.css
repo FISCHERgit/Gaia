@@ -1,58 +1,58 @@
-/* Gaia Linux - Purple accent override for Arc-Dark */
+/* Gaia Linux - Lime green accent override for Breeze-Dark */
 
 /* Selection & highlights */
-@define-color theme_selected_bg_color #7c3aed;
-@define-color theme_selected_fg_color #ffffff;
-@define-color accent_bg_color #7c3aed;
-@define-color accent_color #a78bfa;
+@define-color theme_selected_bg_color #c4d600;
+@define-color theme_selected_fg_color #1a1c12;
+@define-color accent_bg_color #c4d600;
+@define-color accent_color #d4e500;
 
-/* Override blue accents with purple */
+/* Override blue accents with lime green */
 *:selected,
 *:selected:focus {
-    background-color: #7c3aed;
-    color: #ffffff;
+    background-color: #c4d600;
+    color: #1a1c12;
 }
 
 row:selected {
-    background-color: #7c3aed;
+    background-color: #c4d600;
 }
 
 button:checked,
 modelbutton:checked {
-    background-color: #7c3aed;
-    color: #ffffff;
+    background-color: #c4d600;
+    color: #1a1c12;
 }
 
 check:checked,
 radio:checked {
-    background-color: #7c3aed;
-    color: #ffffff;
+    background-color: #c4d600;
+    color: #1a1c12;
 }
 
 switch:checked slider {
-    background-color: #7c3aed;
+    background-color: #c4d600;
 }
 
 scale highlight {
-    background-color: #7c3aed;
+    background-color: #c4d600;
 }
 
 progressbar progress {
-    background-color: #7c3aed;
+    background-color: #c4d600;
 }
 
 entry:focus,
 textview:focus,
 treeview:focus {
-    border-color: #7c3aed;
+    border-color: #c4d600;
 }
 
 link,
 *:link {
-    color: #a78bfa;
+    color: #d4e500;
 }
 
 link:visited,
 *:visited {
-    color: #8b5cf6;
+    color: #a8b800;
 }

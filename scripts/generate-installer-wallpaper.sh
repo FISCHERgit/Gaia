@@ -18,7 +18,7 @@ if [ -f "$WALLPAPER" ]; then
 elif command -v convert &> /dev/null; then
     # Fallback: generate cream/green radial gradient
     convert -size 1920x1080 \
-        radial-gradient:"#d4e840"-"#f5f5eb" \
+        radial-gradient:"#c4d600"-"#f5f5eb" \
         "$OUTPUT"
     echo "Installer wallpaper: generated gradient"
 elif command -v python3 &> /dev/null; then
@@ -30,8 +30,8 @@ width, height = 640, 360
 cx, cy = width / 2, height / 2
 max_dist = math.sqrt(cx * cx + cy * cy)
 
-# Center: yellow-green (#d4e840), edges: cream (#f5f5eb)
-cr, cg, cb = 0xd4, 0xe8, 0x40
+# Center: yellow-green (#c4d600), edges: cream (#f5f5eb)
+cr, cg, cb = 0xc4, 0xd6, 0x00
 er, eg, eb = 0xf5, 0xf5, 0xeb
 
 raw = bytearray()

@@ -70,16 +70,16 @@ Name=Breeze Dark
 WidgetStyle=Breeze
 
 [Colors:View]
-BackgroundNormal=30,27,75
-ForegroundNormal=233,213,255
+BackgroundNormal=26,28,18
+ForegroundNormal=232,228,216
 
 [Colors:Selection]
-BackgroundNormal=124,58,237
-ForegroundNormal=255,255,255
+BackgroundNormal=196,214,0
+ForegroundNormal=26,28,18
 
 [Colors:Button]
-BackgroundNormal=49,46,129
-ForegroundNormal=233,213,255
+BackgroundNormal=49,54,18
+ForegroundNormal=232,228,216
 
 [Icons]
 Theme=breeze-dark
@@ -90,13 +90,13 @@ SingleClick=false
 AnimationDurationFactor=0.5
 EOF
 
-# Plasma accent color (purple)
+# Plasma accent color (lime green)
 cat > /etc/skel/.config/plasmarc << 'EOF'
 [Theme]
 name=breeze-dark
 
 [Colors]
-accentColor=#7c3aed
+accentColor=#c4d600
 EOF
 
 # KWin (window manager) config + performance
@@ -165,8 +165,7 @@ cat > /etc/skel/.config/baloofilerc << 'EOF'
 Indexing-Enabled=false
 EOF
 
-# Wallpaper for Plasma desktop
-# Write a plasmashellrc default to force wallpaper on first launch
+# Wallpaper + macOS-like Dock layout for Plasma desktop
 cat > /etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc << 'EOF'
 [Containments][1]
 activityId=
@@ -181,13 +180,86 @@ wallpaperplugin=org.kde.image
 Image=file:///usr/share/backgrounds/gaia/wallpaper.png
 FillMode=2
 SlidePaths=
+
+# --- Top Bar (slim: global menu, system tray, clock) ---
+[Containments][2]
+activityId=
+formfactor=2
+immutability=1
+lastScreen=0
+location=3
+plugin=org.kde.panel
+
+[Containments][2][General]
+AppletOrder=4;5;6
+
+[Containments][2][Applets][4]
+immutability=1
+plugin=org.kde.plasma.appmenu
+
+[Containments][2][Applets][5]
+immutability=1
+plugin=org.kde.plasma.systemtray
+
+[Containments][2][Applets][6]
+immutability=1
+plugin=org.kde.plasma.digitalclock
+
+[Containments][2][Applets][6][Configuration][Appearance]
+showDate=true
+dateFormat=custom
+customDateFormat=ddd d MMM
+
+# --- Bottom Dock (macOS-style: centered, floating, icon-only) ---
+[Containments][3]
+activityId=
+formfactor=2
+immutability=1
+lastScreen=0
+location=4
+plugin=org.kde.panel
+
+[Containments][3][General]
+AppletOrder=7;8;9
+
+[Containments][3][Applets][7]
+immutability=1
+plugin=org.kde.plasma.kickoff
+
+[Containments][3][Applets][7][Configuration][General]
+icon=/usr/share/pixmaps/gaia-logo.png
+favoritesPortedToKAstats=true
+
+[Containments][3][Applets][8]
+immutability=1
+plugin=org.kde.plasma.icontasks
+
+[Containments][3][Applets][8][Configuration][General]
+launchers=preferred://filemanager,preferred://browser,applications:org.kde.konsole.desktop,applications:org.kde.kate.desktop
+
+[Containments][3][Applets][9]
+immutability=1
+plugin=org.kde.plasma.trash
 EOF
 
-# Also set Plasma default wallpaper via plasmashellrc
+# Dock panel config (floating, auto-hide, height)
+# Top bar: slim (26px), Bottom dock: 56px, floating, dodge windows
 cat > /etc/skel/.config/plasmashellrc << 'EOF'
 [Wallpapers][org.kde.image][General]
 Image=file:///usr/share/backgrounds/gaia/wallpaper.png
 FillMode=2
+
+[PlasmaViews][Panel 2]
+thickness=26
+floating=0
+alignment=2
+
+[PlasmaViews][Panel 3]
+thickness=56
+floating=1
+alignment=4
+panelVisibility=2
+lengthMode=2
 EOF
 
 # --- FORCE Gaia wallpaper as the ONLY default everywhere ---
@@ -338,26 +410,7 @@ if [ -f "$GAIA_LOGO" ]; then
         fi
     done
 
-    # Kickoff start menu: use Gaia logo instead of KDE logo
-    mkdir -p /etc/skel/.config
-    cat >> /etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc << 'KICKEOF'
-
-[Containments][2]
-activityId=
-formfactor=2
-immutability=1
-lastScreen=0
-location=4
-plugin=org.kde.panel
-
-[Containments][2][Applets][3]
-immutability=1
-plugin=org.kde.plasma.kickoff
-
-[Containments][2][Applets][3][Configuration][General]
-icon=/usr/share/pixmaps/gaia-logo.png
-favoritesPortedToKAstats=true
-KICKEOF
+    # Kickoff logo already configured in dock layout above
 fi
 
 # Set Gaia wallpaper as Plasma system default (with all resolutions)
@@ -484,6 +537,27 @@ ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
 # HDD: fair queuing
 ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
 EOF
+
+# --- earlyoom (prevent system freeze on OOM) ---
+mkdir -p /etc/default
+cat > /etc/default/earlyoom << 'EOF'
+EARLYOOM_ARGS="-r 60 -m 5 -s 5 --prefer '(Web Content|Isolated Web)' --avoid '(init|sddm|plasmashell|kwin)'"
+EOF
+systemctl enable earlyoom 2>/dev/null || true
+
+# --- Journald: limit log size ---
+mkdir -p /etc/systemd/journald.conf.d
+cat > /etc/systemd/journald.conf.d/gaia.conf << 'EOF'
+[Journal]
+SystemMaxUse=100M
+RuntimeMaxUse=50M
+MaxFileSec=7day
+EOF
+
+# --- Enable performance services ---
+systemctl enable irqbalance 2>/dev/null || true
+systemctl enable thermald 2>/dev/null || true
+systemctl enable preload 2>/dev/null || true
 
 # --- tmpfs for /tmp (RAM-backed = faster) ---
 if ! grep -q '/tmp' /etc/fstab 2>/dev/null; then

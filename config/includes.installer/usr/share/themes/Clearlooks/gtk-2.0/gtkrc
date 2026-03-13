@@ -28,7 +28,7 @@ style "gaia-default" {
     bg[NORMAL]        = "#f5f5eb"
     bg[PRELIGHT]      = "#eeeee0"
     bg[ACTIVE]        = "#e8e8d8"
-    bg[SELECTED]      = "#8ba800"
+    bg[SELECTED]      = "#c4d600"
     bg[INSENSITIVE]   = "#f0f0e6"
 
     # Foreground: dark charcoal
@@ -48,8 +48,8 @@ style "gaia-default" {
     # Input backgrounds: white
     base[NORMAL]      = "#ffffff"
     base[PRELIGHT]    = "#fafaf4"
-    base[ACTIVE]      = "#8ba800"
-    base[SELECTED]    = "#8ba800"
+    base[ACTIVE]      = "#c4d600"
+    base[SELECTED]    = "#c4d600"
     base[INSENSITIVE] = "#f0f0e6"
 
     engine "clearlooks" {
@@ -71,7 +71,7 @@ style "gaia-button" = "gaia-default" {
     bg[NORMAL]   = "#e8e8d8"
     bg[PRELIGHT] = "#ddddc8"
     bg[ACTIVE]   = "#d0d0b8"
-    bg[SELECTED] = "#8ba800"
+    bg[SELECTED] = "#c4d600"
 
     fg[NORMAL]   = "#2a2a2a"
     fg[PRELIGHT] = "#1a1a1a"
@@ -90,7 +90,7 @@ style "gaia-notebook" = "gaia-default" {
 
     bg[NORMAL]   = "#f0f0e4"
     bg[ACTIVE]   = "#e8e8d8"
-    bg[SELECTED] = "#8ba800"
+    bg[SELECTED] = "#c4d600"
 }
 
 # ── Menu Bar ─────────────────────────────────────────────────
@@ -105,7 +105,7 @@ style "gaia-menuitem" = "gaia-default" {
     xthickness = 3
     ythickness = 3
 
-    bg[PRELIGHT] = "#8ba800"
+    bg[PRELIGHT] = "#c4d600"
     fg[PRELIGHT] = "#ffffff"
 }
 
@@ -116,7 +116,7 @@ style "gaia-progressbar" = "gaia-default" {
     ythickness = 1
 
     bg[NORMAL]   = "#e0e0d0"
-    bg[SELECTED] = "#8ba800"
+    bg[SELECTED] = "#c4d600"
     fg[PRELIGHT] = "#ffffff"
 
     engine "clearlooks" {
@@ -131,8 +131,8 @@ style "gaia-entry" = "gaia-default" {
     ythickness = 4
 
     base[NORMAL]   = "#ffffff"
-    base[ACTIVE]   = "#8ba800"
-    base[SELECTED] = "#8ba800"
+    base[ACTIVE]   = "#c4d600"
+    base[SELECTED] = "#c4d600"
     text[NORMAL]   = "#2a2a2a"
     text[SELECTED] = "#ffffff"
 
@@ -174,8 +174,8 @@ style "gaia-frame" = "gaia-default" {
 
 style "gaia-treeview" = "gaia-default" {
     base[NORMAL]   = "#ffffff"
-    base[SELECTED] = "#8ba800"
-    base[ACTIVE]   = "#a0c000"
+    base[SELECTED] = "#c4d600"
+    base[ACTIVE]   = "#d4e500"
     text[NORMAL]   = "#2a2a2a"
     text[SELECTED] = "#ffffff"
     text[ACTIVE]   = "#ffffff"

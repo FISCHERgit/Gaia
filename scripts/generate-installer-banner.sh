@@ -22,7 +22,7 @@ if command -v convert &> /dev/null; then
         -gravity West -annotate +85+0 "Gaia Linux" \
         -font "Noto-Sans" -pointsize 13 -fill "#707060" \
         -gravity West -annotate +85+22 "Installation" \
-        \( -size 800x2 xc:"#8ba800" \) -gravity South -composite \
+        \( -size 800x2 xc:"#c4d600" \) -gravity South -composite \
         "$OUTPUT"
 elif command -v python3 &> /dev/null; then
     echo "Warning: ImageMagick not found. Creating gradient banner with Python3."
@@ -40,7 +40,7 @@ for y in range(height):
         t = x / width
         if y >= height - 2:
             # Green accent line at bottom
-            r, g, b = 0x8b, 0xa8, 0x00
+            r, g, b = 0xc4, 0xd6, 0x00
         else:
             r = int(0xf5 + (0xee - 0xf5) * t)
             g = int(0xf5 + (0xee - 0xf5) * t)

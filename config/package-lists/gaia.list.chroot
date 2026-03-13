@@ -70,6 +70,13 @@ curl
 wget
 nano
 
+# Performance
+preload
+earlyoom
+zram-tools
+irqbalance
+thermald
+
 # Fonts
 fonts-noto
 fonts-liberation2
