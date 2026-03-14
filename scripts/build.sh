@@ -87,6 +87,7 @@ lb config \
     --mirror-chroot "$MIRROR" \
     --mirror-chroot-security "http://security.debian.org/debian-security" \
     $APT_PROXY_OPTS \
+    --bootappend-live "boot=live components quiet splash" \
     --iso-application "Gaia Linux" \
     --iso-publisher "Gaia Project" \
     --iso-volume "GaiaLinux"
@@ -144,7 +145,6 @@ for f in \
     "$BUILD_DIR/config/includes.chroot/usr/share/backgrounds/gaia/wallpaper.png" \
     "$BUILD_DIR/config/includes.chroot/usr/share/pixmaps/gaia-logo.png" \
     "$BUILD_DIR/config/includes.chroot/etc/calamares/settings.conf" \
-    "$BUILD_DIR/config/includes.binary/boot/grub/grub.cfg" \
     "$BUILD_DIR/config/hooks/live/0100-gaia-customization.hook.chroot"; do
     if [ -f "$f" ]; then
         echo "  OK: $(basename "$f")"
