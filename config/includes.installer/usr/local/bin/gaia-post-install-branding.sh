@@ -385,14 +385,17 @@ gtk-cursor-theme-name=breeze_cursors
 gtk-application-prefer-dark-theme=true
 EOF
 
-# --- Copy skel to existing user home directories ---
+# --- Force-copy skel to existing user home directories ---
 for homedir in "$TARGET"/home/*; do
     [ -d "$homedir" ] || continue
     username=$(basename "$homedir")
-    cp -rn "$SKEL/.config" "$homedir/" 2>/dev/null || true
-    cp -rn "$SKEL/.local" "$homedir/" 2>/dev/null || true
+    # Force-copy to overwrite any KDE Plasma defaults
+    cp -rf "$SKEL/.config" "$homedir/" 2>/dev/null || true
+    cp -rf "$SKEL/.local" "$homedir/" 2>/dev/null || true
+    # Mark as configured so autostart doesn't fight
+    touch "$homedir/.gaia-configured"
     # Fix ownership
-    in-target chown -R "$username:$username" "/home/$username/.config" "/home/$username/.local" 2>/dev/null || true
+    in-target chown -R "$username:$username" "/home/$username/.config" "/home/$username/.local" "/home/$username/.gaia-configured" 2>/dev/null || true
 done
 
 # --- Gaia apply-config script (first-login wallpaper enforcement) ---
@@ -402,8 +405,8 @@ MARKER="$HOME/.gaia-configured"
 [ -f "$MARKER" ] && exit 0
 
 mkdir -p "$HOME/.config" "$HOME/.local/share/konsole"
-cp -rn /etc/skel/.config/* "$HOME/.config/" 2>/dev/null || true
-cp -rn /etc/skel/.local/share/konsole/* "$HOME/.local/share/konsole/" 2>/dev/null || true
+cp -rf /etc/skel/.config/* "$HOME/.config/" 2>/dev/null || true
+cp -rf /etc/skel/.local/share/konsole/* "$HOME/.local/share/konsole/" 2>/dev/null || true
 
 IS_VM=false
 if systemd-detect-virt -q 2>/dev/null; then
