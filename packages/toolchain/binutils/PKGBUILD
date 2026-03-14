@@ -1,0 +1,34 @@
+pkgname=binutils
+pkgver=2.43
+pkgrel=1
+pkgdesc="A set of programs to assemble and manipulate binary and object files"
+arch=('x86_64')
+url="https://www.gnu.org/software/binutils/"
+license=('GPL')
+depends=('glibc' 'zlib' 'zstd')
+makedepends=('texinfo')
+source=("https://ftp.gnu.org/gnu/binutils/binutils-${pkgver}.tar.xz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    mkdir -p build && cd build
+    ../configure --prefix=/usr \
+        --sysconfdir=/etc \
+        --enable-gold \
+        --enable-ld=default \
+        --enable-plugins \
+        --enable-shared \
+        --disable-werror \
+        --enable-64-bit-bfd \
+        --enable-new-dtags \
+        --enable-default-hash-style=gnu \
+        --with-system-zlib
+    make tooldir=/usr
+}
+
+package() {
+    cd "${pkgname}-${pkgver}/build"
+    make tooldir=/usr DESTDIR="${pkgdir}" install
+    rm -fv "${pkgdir}"/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
+}

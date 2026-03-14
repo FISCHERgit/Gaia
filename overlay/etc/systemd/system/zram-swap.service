@@ -1,0 +1,12 @@
+[Unit]
+Description=Configure zRAM swap
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/gaia-zram-start.sh
+ExecStop=/usr/local/bin/gaia-zram-stop.sh
+
+[Install]
+WantedBy=multi-user.target

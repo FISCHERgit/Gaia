@@ -1,0 +1,38 @@
+pkgname=systemd
+pkgver=256
+pkgrel=1
+pkgdesc="System and Service Manager"
+arch=('x86_64')
+url="https://www.freedesktop.org/wiki/Software/systemd"
+license=('GPL2' 'LGPL2.1')
+depends=('glibc' 'acl' 'bash' 'libcap' 'kmod' 'util-linux' 'dbus' 'openssl' 'zstd' 'xz' 'zlib' 'libffi')
+makedepends=('meson' 'ninja' 'gperf' 'python' 'libelf')
+source=("https://github.com/systemd/systemd/archive/v${pkgver}/systemd-${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    mkdir -p build && cd build
+    meson setup .. \
+        --prefix=/usr \
+        --buildtype=release \
+        -Dmode=release \
+        -Ddev-kvm-mode=0660 \
+        -Ddefault-dnssec=no \
+        -Dfirstboot=false \
+        -Dinstall-tests=false \
+        -Dldconfig=false \
+        -Dman=false \
+        -Dsysusers=false \
+        -Db_lto=false \
+        -Drpmmacrosdir=no \
+        -Dhomed=disabled \
+        -Duserdb=false \
+        -Dblkid=enabled
+    ninja
+}
+
+package() {
+    cd "${pkgname}-${pkgver}/build"
+    DESTDIR="${pkgdir}" ninja install
+}

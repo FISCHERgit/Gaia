@@ -1,0 +1,46 @@
+pkgname=linux-gaia
+pkgver=6.12.8
+pkgrel=1
+pkgdesc="Linux kernel with Gaia branding"
+arch=('x86_64')
+url="https://www.kernel.org"
+license=('GPL2')
+depends=('coreutils' 'kmod')
+makedepends=('bc' 'libelf' 'perl' 'python' 'cpio')
+source=("https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${pkgver}.tar.xz"
+        'config')
+sha256sums=('SKIP' 'SKIP')
+
+build() {
+    cd "linux-${pkgver}"
+
+    if [ -f "${srcdir}/config" ]; then
+        cp "${srcdir}/config" .config
+    else
+        make defconfig
+    fi
+
+    # Gaia branding
+    scripts/config --set-str LOCALVERSION "-gaia"
+    scripts/config --set-str BUILD_SALT "Gaia Linux"
+
+    # Essential modules for live boot
+    scripts/config --enable OVERLAY_FS
+    scripts/config --enable SQUASHFS
+    scripts/config --enable SQUASHFS_XZ
+    scripts/config --enable BLK_DEV_LOOP
+    scripts/config --enable ZRAM
+    scripts/config --enable EFI
+    scripts/config --enable EFI_STUB
+
+    make olddefconfig
+    make -j$(nproc)
+}
+
+package() {
+    cd "linux-${pkgver}"
+    make INSTALL_MOD_PATH="${pkgdir}/usr" modules_install
+    install -Dm644 arch/x86/boot/bzImage "${pkgdir}/boot/vmlinuz-${pkgver}-gaia"
+    install -Dm644 System.map "${pkgdir}/boot/System.map-${pkgver}-gaia"
+    install -Dm644 .config "${pkgdir}/boot/config-${pkgver}-gaia"
+}

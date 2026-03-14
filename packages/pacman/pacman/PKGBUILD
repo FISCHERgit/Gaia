@@ -1,0 +1,27 @@
+pkgname=pacman
+pkgver=7.0.0
+pkgrel=1
+pkgdesc="A library-based package manager with dependency support"
+arch=('x86_64')
+url="https://archlinux.org/pacman/"
+license=('GPL2')
+depends=('bash' 'glibc' 'libarchive' 'curl' 'gpgme' 'openssl')
+makedepends=('meson' 'ninja' 'pkg-config' 'python')
+source=("https://gitlab.archlinux.org/pacman/pacman/-/releases/v${pkgver}/downloads/pacman-${pkgver}.tar.xz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    meson setup build \
+        --prefix=/usr \
+        --buildtype=release \
+        -Ddoc=disabled \
+        -Dscriptlet-shell=/usr/bin/bash \
+        -Dldconfig=/usr/bin/ldconfig
+    meson compile -C build
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    DESTDIR="${pkgdir}" meson install -C build
+}

@@ -2,8 +2,19 @@ build/
 *.iso
 *.img
 *.deb
+*.pkg.tar.*
 .cache/
-scripts/kernel/build/
-scripts/kernel/out/
-scripts/kernel/kernel-build.log
-config/packages.chroot/
+.claude/worktrees/
+
+# Build artifacts
+/mnt/gaia/
+sources/
+tools/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store

@@ -1,0 +1,12 @@
+[Unit]
+Description=Gaia Linux Kernel Branding
+After=local-fs.target
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/gaia-proc-version.sh
+
+[Install]
+WantedBy=multi-user.target

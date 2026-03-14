@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Gaia Config
+Exec=/usr/local/bin/gaia-apply-config.sh
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-phase=2

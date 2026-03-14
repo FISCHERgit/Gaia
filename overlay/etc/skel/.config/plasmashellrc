@@ -1,0 +1,15 @@
+[Wallpapers][org.kde.image][General]
+Image=file:///usr/share/backgrounds/gaia/wallpaper.png
+FillMode=2
+
+[PlasmaViews][Panel 2]
+thickness=26
+floating=0
+alignment=2
+
+[PlasmaViews][Panel 3]
+thickness=56
+floating=1
+alignment=4
+panelVisibility=2
+lengthMode=2

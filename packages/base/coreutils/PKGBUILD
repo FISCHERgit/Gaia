@@ -1,0 +1,23 @@
+pkgname=coreutils
+pkgver=9.5
+pkgrel=1
+pkgdesc="GNU core utilities"
+arch=('x86_64')
+url="https://www.gnu.org/software/coreutils/"
+license=('GPL3')
+depends=('glibc' 'acl' 'attr' 'gmp' 'libcap' 'openssl')
+source=("https://ftp.gnu.org/gnu/coreutils/coreutils-${pkgver}.tar.xz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    ./configure --prefix=/usr \
+        --enable-no-install-program=kill,uptime \
+        --enable-single-binary=symlinks
+    make
+}
+
+package() {
+    cd "${pkgname}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
+}

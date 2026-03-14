@@ -1,0 +1,24 @@
+[General]
+ColorScheme=BreezeDark
+Name=Breeze Dark
+WidgetStyle=Breeze
+
+[Colors:View]
+BackgroundNormal=26,28,18
+ForegroundNormal=232,228,216
+
+[Colors:Selection]
+BackgroundNormal=196,214,0
+ForegroundNormal=26,28,18
+
+[Colors:Button]
+BackgroundNormal=49,54,18
+ForegroundNormal=232,228,216
+
+[Icons]
+Theme=breeze-dark
+
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop
+SingleClick=false
+AnimationDurationFactor=0.5

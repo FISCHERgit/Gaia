@@ -1,0 +1,61 @@
+{
+    "logo": {
+        "type": "builtin",
+        "source": "linux"
+    },
+    "modules": [
+        {
+            "type": "os",
+            "key": "OS"
+        },
+        {
+            "type": "host",
+            "key": "Host"
+        },
+        {
+            "type": "kernel",
+            "key": "Kernel",
+            "format": "{1}-gaia"
+        },
+        {
+            "type": "uptime",
+            "key": "Uptime"
+        },
+        {
+            "type": "packages",
+            "key": "Packages"
+        },
+        {
+            "type": "shell",
+            "key": "Shell"
+        },
+        {
+            "type": "de",
+            "key": "DE"
+        },
+        {
+            "type": "wm",
+            "key": "WM"
+        },
+        {
+            "type": "terminal",
+            "key": "Terminal"
+        },
+        {
+            "type": "cpu",
+            "key": "CPU"
+        },
+        {
+            "type": "gpu",
+            "key": "GPU"
+        },
+        {
+            "type": "memory",
+            "key": "Memory"
+        },
+        {
+            "type": "disk",
+            "key": "Disk"
+        }
+    ]
+}

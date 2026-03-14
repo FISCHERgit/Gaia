@@ -1,0 +1,30 @@
+pkgname=glibc
+pkgver=2.40
+pkgrel=1
+pkgdesc="GNU C Library"
+arch=('x86_64')
+url="https://www.gnu.org/software/libc/"
+license=('GPL' 'LGPL')
+depends=('linux-api-headers')
+makedepends=('python' 'bison' 'texinfo')
+source=("https://ftp.gnu.org/gnu/glibc/glibc-${pkgver}.tar.xz")
+sha256sums=('SKIP')
+
+build() {
+    cd "${pkgname}-${pkgver}"
+    mkdir -p build && cd build
+    echo "rootsbindir=/usr/sbin" > configparms
+    ../configure --prefix=/usr \
+        --disable-werror \
+        --enable-kernel=4.19 \
+        --enable-stack-protector=strong \
+        --disable-nscd
+    make
+}
+
+package() {
+    cd "${pkgname}-${pkgver}/build"
+    make DESTDIR="${pkgdir}" install
+    # Install locale
+    make DESTDIR="${pkgdir}" localedata/install-locales
+}

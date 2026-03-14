@@ -1,0 +1,12 @@
+[Unit]
+Description=Gaia Linux Post-Install Cleanup
+After=network.target graphical.target
+ConditionKernelCommandLine=!boot=live
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/gaia-post-install-cleanup.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
