@@ -371,7 +371,8 @@ download "$GITHUB/alsa-project/alsa-lib/archive/refs/tags/v1.2.12/alsa-lib-1.2.1
 echo ""
 echo "--- Desktop: KDE Frameworks 6 ---"
 
-KDE_MIRROR="https://download.kde.org/stable/frameworks/${KF6_VER}"
+KF6_SHORT="${KF6_VER%.*}"  # 6.7.0 → 6.7
+KDE_MIRROR="https://download.kde.org/stable/frameworks/${KF6_SHORT}"
 KF6_MODULES=(
     extra-cmake-modules
     karchive
