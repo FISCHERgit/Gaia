@@ -133,6 +133,7 @@ flush_downloads() {
             --min-split-size=1M \
             --continue=true \
             --auto-file-renaming=false \
+            --check-certificate=false \
             --console-log-level=warn \
             --summary-interval=10 || true
         > "$DOWNLOAD_LIST"
@@ -173,7 +174,7 @@ download "$GNU_MIRROR/bison/bison-${BISON_VER}.tar.xz"
 download "https://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.xz"
 download "https://www.python.org/ftp/python/${PYTHON_VER}/Python-${PYTHON_VER}.tar.xz"
 download "$GNU_MIRROR/texinfo/texinfo-${TEXINFO_VER}.tar.xz"
-download "$KERNEL_MIRROR/utils/util-linux/v${UTIL_LINUX_VER%.*}/util-linux-${UTIL_LINUX_VER}.tar.xz"
+download "$KERNEL_MIRROR/utils/util-linux/v${UTIL_LINUX_VER}/util-linux-${UTIL_LINUX_VER}.tar.xz"
 
 # Libraries
 download "https://zlib.net/zlib-${ZLIB_VER}.tar.xz"
