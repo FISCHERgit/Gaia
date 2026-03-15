@@ -475,7 +475,7 @@ KF6_MODULES=(
     kparts
     kirigami
     ksvg
-    plasma-framework
+    breeze-icons
     kstatusnotifieritem
     kidletime
     krunner
@@ -512,7 +512,7 @@ PLASMA_MODULES=(
     kdecoration
     libkscreen
     breeze
-    breeze-icons
+    libplasma
     breeze-gtk
     kscreenlocker
     kwayland

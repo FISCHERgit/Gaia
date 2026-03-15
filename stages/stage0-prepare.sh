@@ -222,8 +222,8 @@ download "$GITHUB/gavinhoward/bc/releases/download/6.7.6/bc-6.7.6.tar.xz" 2>/dev
 download "$GITHUB/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz"
 download "$GNU_MIRROR/gdbm/gdbm-1.24.tar.gz"
 download "$GNU_MIRROR/gperf/gperf-3.1.tar.gz"
-download "$GITHUB/kmod-project/kmod/releases/download/v${KMOD_VER}/kmod-${KMOD_VER}.tar.xz"
-download "$GITHUB/procps-ng/procps/releases/download/v${PROCPS_VER}/procps-ng-${PROCPS_VER}.tar.xz"
+download "https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-${KMOD_VER}.tar.xz"
+download "$SOURCEFORGE/procps-ng/Production/procps-ng-${PROCPS_VER}.tar.xz"
 download "https://cdn.kernel.org/pub/linux/utils/net/iproute2/iproute2-${IPROUTE2_VER}.tar.xz"
 download "https://cdn.kernel.org/pub/linux/utils/kbd/kbd-2.6.4.tar.xz" 2>/dev/null || true
 download "https://download.savannah.nongnu.org/releases/man-db/man-db-2.12.1.tar.xz" 2>/dev/null || true
@@ -241,7 +241,7 @@ download "$GITHUB/plougher/squashfs-tools/archive/refs/tags/${SQUASHFS_TOOLS_VER
 # Bootloader
 download "$GNU_MIRROR/grub/grub-${GRUB_VER}.tar.xz"
 download "$GITHUB/rhboot/efibootmgr/archive/refs/tags/${EFIBOOTMGR_VER}/efibootmgr-${EFIBOOTMGR_VER}.tar.gz"
-download "$GITHUB/rhboot/efivar/releases/download/39/efivar-39.tar.bz2"
+download "$GITHUB/rhboot/efivar/archive/refs/tags/39.tar.gz" "efivar-39.tar.gz"
 
 # Networking
 download "https://curl.se/download/curl-${CURL_VER}.tar.xz"
@@ -263,7 +263,7 @@ download "https://gitlab.freedesktop.org/wayland/wayland/-/releases/${WAYLAND_VE
 download "https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/${WAYLAND_PROTOCOLS_VER}/downloads/wayland-protocols-${WAYLAND_PROTOCOLS_VER}.tar.xz"
 download "https://archive.mesa3d.org/mesa-${MESA_VER}.tar.xz"
 download "https://xkbcommon.org/download/libxkbcommon-${LIBXKBCOMMON_VER}.tar.xz"
-download "https://gitlab.freedesktop.org/libinput/libinput/-/releases/${LIBINPUT_VER}/downloads/libinput-${LIBINPUT_VER}.tar.bz2"
+download "https://gitlab.freedesktop.org/libinput/libinput/-/archive/${LIBINPUT_VER}/libinput-${LIBINPUT_VER}.tar.bz2"
 
 # Xorg dependencies (proto, libs, server)
 XORG_MIRROR="https://www.x.org/releases/individual"
@@ -300,7 +300,7 @@ download "$XORG_MIRROR/lib/libpciaccess-0.18.1.tar.xz"
 download "$XORG_MIRROR/lib/pixman-0.43.4.tar.gz"
 download "$XORG_MIRROR/data/xkeyboard-config/xkeyboard-config-2.42.tar.xz"
 download "$XORG_MIRROR/font/font-util-1.4.1.tar.xz"
-download "$XORG_MIRROR/server/xorg-server-${XORG_SERVER_VER}.tar.xz"
+download "https://xorg.freedesktop.org/releases/individual/xserver/xorg-server-${XORG_SERVER_VER}.tar.xz"
 download "$XORG_MIRROR/driver/xf86-video-amdgpu-23.0.0.tar.xz"
 download "$XORG_MIRROR/driver/xf86-video-intel-2.99.917.tar.bz2" 2>/dev/null || true
 download "$XORG_MIRROR/driver/xf86-video-nouveau-1.0.17.tar.bz2"
@@ -353,14 +353,14 @@ download "https://www.cairographics.org/releases/cairo-1.18.2.tar.xz"
 download "https://download.gnome.org/sources/pango/1.54/pango-1.54.0.tar.xz"
 download "https://download.gnome.org/sources/glib/2.82/glib-2.82.2.tar.xz"
 download "https://download.gnome.org/sources/gdk-pixbuf/2.42/gdk-pixbuf-2.42.12.tar.xz"
-download "https://download.gnome.org/sources/shared-mime-info/2.4/shared-mime-info-2.4.tar.xz"
+download "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/2.4/shared-mime-info-2.4.tar.gz"
 download "$GITHUB/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2"
 download "$GITHUB/polkit-org/polkit/archive/refs/tags/125/polkit-125.tar.gz" 2>/dev/null || true
 download "$GITHUB/FreeGLUT/freeglut/releases/download/v3.6.0/freeglut-3.6.0.tar.gz" 2>/dev/null || true
 download "https://download.gnome.org/sources/gobject-introspection/1.82/gobject-introspection-1.82.0.tar.xz"
 download "https://freedesktop.org/software/libevdev/libevdev-1.13.3.tar.xz"
 download "https://download.gnome.org/sources/libgudev/238/libgudev-238.tar.xz" 2>/dev/null || true
-download "https://github.com/libfido2/libfido2/archive/refs/tags/1.14.0/libfido2-1.14.0.tar.gz" 2>/dev/null || true
+download "https://developers.yubico.com/libfido2/Releases/libfido2-1.14.0.tar.gz" 2>/dev/null || true
 download "$GITHUB/cisco/openh264/archive/refs/tags/v2.4.1/openh264-2.4.1.tar.gz" 2>/dev/null || true
 download "https://downloads.xiph.org/releases/ogg/libogg-1.3.5.tar.xz"
 download "https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz"
@@ -411,7 +411,7 @@ KF6_MODULES=(
     kio
     kbookmarks
     kirigami
-    plasma-framework
+    breeze-icons
     ksvg
     krunner
     kunitconversion
@@ -448,7 +448,7 @@ echo "--- Desktop: KDE Plasma 6 ---"
 PLASMA_MIRROR="https://download.kde.org/stable/plasma/${PLASMA_VER}"
 PLASMA_MODULES=(
     breeze
-    breeze-icons
+    libplasma
     breeze-gtk
     kwin
     plasma-workspace
@@ -569,7 +569,7 @@ download "$GITHUB/dracut-ng/dracut-ng/archive/refs/tags/103/dracut-ng-103.tar.gz
 echo ""
 echo "--- Desktop: Fonts ---"
 
-download "$GITHUB/notofonts/notofonts.github.io/releases/download/noto-monthly-release-24.8.1/NotoSans-v2.014.zip" "noto-sans.zip" 2>/dev/null || true
+download "$GITHUB/notofonts/latin-greek-cyrillic/releases/download/NotoSans-v2.014/NotoSans-v2.014.zip" "noto-sans.zip" 2>/dev/null || true
 download "$GITHUB/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz"
 download "$GITHUB/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.xz" 2>/dev/null || \
     download "$GITHUB/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.gz"
