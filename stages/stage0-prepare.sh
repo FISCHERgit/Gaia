@@ -134,6 +134,10 @@ flush_downloads() {
             --continue=true \
             --auto-file-renaming=false \
             --check-certificate=false \
+            --max-tries=3 \
+            --retry-wait=5 \
+            --timeout=60 \
+            --connect-timeout=30 \
             --console-log-level=warn \
             --summary-interval=10 || true
         > "$DOWNLOAD_LIST"
@@ -174,10 +178,10 @@ download "$GNU_MIRROR/bison/bison-${BISON_VER}.tar.xz"
 download "https://www.cpan.org/src/5.0/perl-${PERL_VER}.tar.xz"
 download "https://www.python.org/ftp/python/${PYTHON_VER}/Python-${PYTHON_VER}.tar.xz"
 download "$GNU_MIRROR/texinfo/texinfo-${TEXINFO_VER}.tar.xz"
-download "$KERNEL_MIRROR/utils/util-linux/v${UTIL_LINUX_VER}/util-linux-${UTIL_LINUX_VER}.tar.xz"
+download "https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${UTIL_LINUX_VER}/util-linux-${UTIL_LINUX_VER}.tar.xz"
 
 # Libraries
-download "https://zlib.net/zlib-${ZLIB_VER}.tar.xz"
+download "https://zlib.net/zlib-${ZLIB_VER}.tar.gz"
 download "$GITHUB/libffi/libffi/releases/download/v${LIBFFI_VER}/libffi-${LIBFFI_VER}.tar.gz"
 download "https://www.openssl.org/source/openssl-${OPENSSL_VER}.tar.gz"
 download "$GNU_MIRROR/readline/readline-${READLINE_VER}.tar.gz"
@@ -209,28 +213,28 @@ download "https://www.sudo.ws/dist/sudo-${SUDO_VER}.tar.gz"
 download "$GNU_MIRROR/nano/nano-${NANO_VER}.tar.xz"
 download "$SOURCEFORGE/zsh/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz"
 download "$GNU_MIRROR/less/less-${LESS_VER}.tar.gz"
-download "$GNU_MIRROR/inetutils/inetutils-3.5.tar.xz" 2>/dev/null || true
+download "$GNU_MIRROR/inetutils/inetutils-2.7.tar.xz" 2>/dev/null || true
 download "$GITHUB/besser82/libxcrypt/releases/download/v4.4.36/libxcrypt-4.4.36.tar.xz"
 download "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.70.tar.xz"
 download "https://download.savannah.gnu.org/releases/attr/attr-2.5.2.tar.xz"
 download "https://download.savannah.gnu.org/releases/acl/acl-2.3.2.tar.xz"
-download "$GNU_MIRROR/bc/bc-6.7.6.tar.xz" 2>/dev/null || true
+download "$GITHUB/gavinhoward/bc/releases/download/6.7.6/bc-6.7.6.tar.xz" 2>/dev/null || true
 download "$GITHUB/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz"
 download "$GNU_MIRROR/gdbm/gdbm-1.24.tar.gz"
 download "$GNU_MIRROR/gperf/gperf-3.1.tar.gz"
 download "$GITHUB/kmod-project/kmod/releases/download/v${KMOD_VER}/kmod-${KMOD_VER}.tar.xz"
 download "$GITHUB/procps-ng/procps/releases/download/v${PROCPS_VER}/procps-ng-${PROCPS_VER}.tar.xz"
-download "$KERNEL_MIRROR/utils/net/iproute2/iproute2-${IPROUTE2_VER}.tar.xz"
-download "$GNU_MIRROR/kbd/kbd-2.6.4.tar.xz" 2>/dev/null || true
+download "https://cdn.kernel.org/pub/linux/utils/net/iproute2/iproute2-${IPROUTE2_VER}.tar.xz"
+download "https://cdn.kernel.org/pub/linux/utils/kbd/kbd-2.6.4.tar.xz" 2>/dev/null || true
 download "https://download.savannah.nongnu.org/releases/man-db/man-db-2.12.1.tar.xz" 2>/dev/null || true
-download "$KERNEL_MIRROR/docs/man-pages/man-pages-6.9.1.tar.xz" 2>/dev/null || true
+download "https://cdn.kernel.org/pub/linux/docs/man-pages/man-pages-6.9.1.tar.xz" 2>/dev/null || true
 download "https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.7.tar.gz"
-download "$GNU_MIRROR/psmisc/psmisc-23.7.tar.xz"
+download "$SOURCEFORGE/psmisc/psmisc/psmisc-23.7.tar.xz" 2>/dev/null || true
 download "$GNU_MIRROR/which/which-2.21.tar.gz" 2>/dev/null || true
 
 # Filesystem tools
 download "$SOURCEFORGE/e2fsprogs/e2fsprogs/v${E2FSPROGS_VER}/e2fsprogs-${E2FSPROGS_VER}.tar.gz"
-download "$KERNEL_MIRROR/utils/fs/btrfs-progs/btrfs-progs-v${BTRFS_PROGS_VER}.tar.xz"
+download "https://cdn.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v${BTRFS_PROGS_VER}.tar.xz" 2>/dev/null || true
 download "$GITHUB/dosfstools/dosfstools/releases/download/v${DOSFSTOOLS_VER}/dosfstools-${DOSFSTOOLS_VER}.tar.gz"
 download "$GITHUB/plougher/squashfs-tools/archive/refs/tags/${SQUASHFS_TOOLS_VER}/squashfs-tools-${SQUASHFS_TOOLS_VER}.tar.gz"
 
@@ -294,7 +298,7 @@ download "$XORG_MIRROR/lib/libXfont2-2.0.7.tar.xz"
 download "$XORG_MIRROR/lib/libxkbfile-1.1.3.tar.xz"
 download "$XORG_MIRROR/lib/libpciaccess-0.18.1.tar.xz"
 download "$XORG_MIRROR/lib/pixman-0.43.4.tar.gz"
-download "$XORG_MIRROR/data/xkeyboard-config-2.42.tar.xz"
+download "$XORG_MIRROR/data/xkeyboard-config/xkeyboard-config-2.42.tar.xz"
 download "$XORG_MIRROR/font/font-util-1.4.1.tar.xz"
 download "$XORG_MIRROR/server/xorg-server-${XORG_SERVER_VER}.tar.xz"
 download "$XORG_MIRROR/driver/xf86-video-amdgpu-23.0.0.tar.xz"
@@ -336,11 +340,10 @@ download "$QT6_BASE/qtnetworkauth-everywhere-src-${QT6_VER}.tar.xz" 2>/dev/null 
 download "$QT6_BASE/qtspeech-everywhere-src-${QT6_VER}.tar.xz" 2>/dev/null || true
 
 # Qt6 dependencies
-download "https://harfbuzz.github.io/release/harfbuzz-9.0.0.tar.xz" 2>/dev/null || \
-    download "$GITHUB/harfbuzz/harfbuzz/releases/download/9.0.0/harfbuzz-9.0.0.tar.xz"
+download "$GITHUB/harfbuzz/harfbuzz/releases/download/9.0.0/harfbuzz-9.0.0.tar.xz"
 download "https://download.savannah.gnu.org/releases/freetype/freetype-2.13.3.tar.xz"
-download "$GITHUB/ArtifexSoftware/thirdparty-lcms2/releases/download/lcms2.16/lcms2-2.16.tar.gz" 2>/dev/null || true
-download "$SOURCEFORGE/libjpeg-turbo/3.0.4/libjpeg-turbo-3.0.4.tar.gz"
+download "$GITHUB/mm2/Little-CMS/releases/download/lcms2.16/lcms2-2.16.tar.gz" 2>/dev/null || true
+download "$GITHUB/libjpeg-turbo/libjpeg-turbo/releases/download/3.0.4/libjpeg-turbo-3.0.4.tar.gz"
 download "$SOURCEFORGE/libpng/libpng16/1.6.44/libpng-1.6.44.tar.xz"
 download "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.3.1/openexr-3.3.1.tar.gz" 2>/dev/null || true
 download "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.4.0.tar.gz"
@@ -352,17 +355,17 @@ download "https://download.gnome.org/sources/glib/2.82/glib-2.82.2.tar.xz"
 download "https://download.gnome.org/sources/gdk-pixbuf/2.42/gdk-pixbuf-2.42.12.tar.xz"
 download "https://download.gnome.org/sources/shared-mime-info/2.4/shared-mime-info-2.4.tar.xz"
 download "$GITHUB/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2"
-download "https://www.freedesktop.org/software/polkit/releases/polkit-125.tar.gz"
+download "$GITHUB/polkit-org/polkit/archive/refs/tags/125/polkit-125.tar.gz" 2>/dev/null || true
 download "$GITHUB/FreeGLUT/freeglut/releases/download/v3.6.0/freeglut-3.6.0.tar.gz" 2>/dev/null || true
 download "https://download.gnome.org/sources/gobject-introspection/1.82/gobject-introspection-1.82.0.tar.xz"
 download "https://freedesktop.org/software/libevdev/libevdev-1.13.3.tar.xz"
-download "https://www.freedesktop.org/software/libgudev/libgudev-238.tar.xz" 2>/dev/null || true
+download "https://download.gnome.org/sources/libgudev/238/libgudev-238.tar.xz" 2>/dev/null || true
 download "https://github.com/libfido2/libfido2/archive/refs/tags/1.14.0/libfido2-1.14.0.tar.gz" 2>/dev/null || true
 download "$GITHUB/cisco/openh264/archive/refs/tags/v2.4.1/openh264-2.4.1.tar.gz" 2>/dev/null || true
 download "https://downloads.xiph.org/releases/ogg/libogg-1.3.5.tar.xz"
 download "https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz"
 download "https://downloads.xiph.org/releases/flac/flac-1.4.3.tar.xz"
-download "https://www.freedesktop.org/software/libsndfile/libsndfile-1.2.2.tar.xz" 2>/dev/null || true
+download "$GITHUB/libsndfile/libsndfile/releases/download/1.2.2/libsndfile-1.2.2.tar.xz" 2>/dev/null || true
 download "$GITHUB/alsa-project/alsa-lib/archive/refs/tags/v1.2.12/alsa-lib-1.2.12.tar.gz"
 
 # ============================================
@@ -429,8 +432,6 @@ KF6_MODULES=(
     kcalendarcore
     kholidays
     knotifyconfig
-    kscreen
-    layer-shell-qt
 )
 
 for kf in "${KF6_MODULES[@]}"; do
@@ -554,8 +555,7 @@ echo "--- Desktop: Performance & VM tools ---"
 download "$GITHUB/rfjakob/earlyoom/archive/refs/tags/v${EARLYOOM_VER}/earlyoom-${EARLYOOM_VER}.tar.gz"
 download "$GITHUB/Irqbalance/irqbalance/archive/refs/tags/v${IRQBALANCE_VER}/irqbalance-${IRQBALANCE_VER}.tar.gz"
 download "$GITHUB/intel/thermal_daemon/archive/refs/tags/v${THERMALD_VER}/thermal_daemon-${THERMALD_VER}.tar.gz"
-download "$GITHUB/spice-space/linux/archive/refs/tags/v0.22.1/spice-vdagent-0.22.1.tar.gz" 2>/dev/null || \
-    download "https://www.spice-space.org/download/releases/spice-vdagent/spice-vdagent-0.22.1.tar.bz2" 2>/dev/null || true
+download "https://www.spice-space.org/download/releases/spice-vdagent-0.22.1.tar.bz2" 2>/dev/null || true
 download "$GITHUB/qemu/qemu/archive/refs/tags/v9.1.1/qemu-9.1.1.tar.gz" 2>/dev/null || true
 download "$GITHUB/vmware/open-vm-tools/releases/download/stable-12.4.0/open-vm-tools-12.4.0-23259341.tar.gz" 2>/dev/null || true
 
@@ -569,8 +569,7 @@ download "$GITHUB/dracut-ng/dracut-ng/archive/refs/tags/103/dracut-ng-103.tar.gz
 echo ""
 echo "--- Desktop: Fonts ---"
 
-download "$GITHUB/googlefonts/noto-fonts/archive/refs/tags/v2024-08-01/noto-fonts-v2024-08-01.tar.gz" 2>/dev/null || \
-    download "https://github.com/notofonts/notofonts.github.io/archive/refs/heads/main.tar.gz" 2>/dev/null || true
+download "$GITHUB/notofonts/notofonts.github.io/releases/download/noto-monthly-release-24.8.1/NotoSans-v2.014.zip" "noto-sans.zip" 2>/dev/null || true
 download "$GITHUB/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz"
 download "$GITHUB/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.xz" 2>/dev/null || \
     download "$GITHUB/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.tar.gz"
