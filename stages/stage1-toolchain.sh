@@ -96,6 +96,12 @@ cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
     "$(dirname $("$GAIA_TGT-gcc" -print-libgcc-file-name))/include/limits.h"
 
+# Create a libgcc_s.so linker script so glibc can link against it
+# (GCC pass 1 is built with --disable-shared, so no real libgcc_s exists yet)
+LIBGCC_DIR="$(dirname $("$GAIA_TGT-gcc" -print-libgcc-file-name))"
+echo "/* GNU ld script */ GROUP ( libgcc.a )" > "$LIBGCC_DIR/libgcc_s.so"
+echo "  Created temporary libgcc_s.so linker script"
+
 cd "$SRC" && rm -rf "gcc-${GCC_VER}"
 
 # --- Glibc ---
