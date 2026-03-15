@@ -213,7 +213,7 @@ download "https://www.sudo.ws/dist/sudo-${SUDO_VER}.tar.gz"
 download "$GNU_MIRROR/nano/nano-${NANO_VER}.tar.xz"
 download "$SOURCEFORGE/zsh/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz"
 download "$GNU_MIRROR/less/less-${LESS_VER}.tar.gz"
-download "$GNU_MIRROR/inetutils/inetutils-2.7.tar.xz" 2>/dev/null || true
+download "$GNU_MIRROR/inetutils/inetutils-2.7.tar.gz" 2>/dev/null || true
 download "$GITHUB/besser82/libxcrypt/releases/download/v4.4.36/libxcrypt-4.4.36.tar.xz"
 download "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.70.tar.xz"
 download "https://download.savannah.gnu.org/releases/attr/attr-2.5.2.tar.xz"
